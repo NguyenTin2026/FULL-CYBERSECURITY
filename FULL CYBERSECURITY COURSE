@@ -1,0 +1,1203 @@
+$ Cyber Security $
+Học tiếp theo CS Network Layer: 
+Lưu ý: Nếu hiện tại bạn chưa có IPv6, vẫn có nhiều dịch vụ đám mây công cộng có thể cấp cho bạn địa chỉ IPv6 công cộng mà bạn có thể sử dụng để thử nghiệm và khám phá.
+*  ICMP  *
+- ICMP thường được liên kết với Ping và Traceroute. ICMP có thể được sử dụng cho những mục đích khác, chẳng hạn như yêu cầu một nút về thời gian của nó được gọi là yêu cầu Dấu thời gian ICMP. Yêu cầu Dấu thời gian ICMP chỉ đơn giản cho phép một Bộ định tuyến yêu cầu một Bộ định tuyến khác đồng bộ hóa thời gian của chúng, một thuộc tính quan trọng trong giao tiếp mạng.
+! Một chiến thuật phổ biến của kẻ tấn công để kiểm tra xem hệ thống có khả dụng trên mạng hay không là thực hiện Ping Sweep. Mục tiêu của hoạt động này là khiến thiết bị mục tiêu trong phạm vi mạng trả lời các yêu cầu ping để kẻ tấn công biết rằng thiết bị đó khả dụng. Cách tiếp cận này là ngây thơ vì nhiều hệ thống theo mặc định chặn các ping đến.
+
+*  Traceroute  *
+- Tracerouting là một cách để xác định bộ định tuyến nào tham gia vào việc gửi một gói tin từ hệ thống A đến B. Việc biết được bộ định tuyến nào mà các gói tin của chúng ta đi qua có thể hữu ích để hiểu rõ hơn về mạng của chúng ta cũng như hiểu được bề mặt tấn công. Bộ định tuyến chịu trách nhiệm định tuyến gói tin theo đúng hướng. Hãy tưởng tượng điều này giống như việc lái xe trên đường, nơi các biển báo giao thông tại các ngã tư hướng dẫn bạn đến đích. Các biển báo tại các ngã tư này đại diện cho các bộ định tuyến. Traceroute xác định các biển báo và ngã tư này và cho bạn biết chúng cách xa bao nhiêu, được đo bằng mili giây (ms).
+
+Tiêu đề IPv4 TTL và IPv6 Hop Limit có cùng chức năng. Mỗi bộ định tuyến định tuyến một gói tin sẽ giảm giá trị này đi 1 và nếu giá trị đạt 0, bộ định tuyến sẽ loại bỏ gói tin và trả về một gói tin ICMP Time Exceeded cho người gửi.
++) Để thực hiện traceroute trên Windows:
+     tracert google.com
++) Để thực hiện traceroute trên Linux (không được cài đặt theo mặc định):
+     traceroute google.com
+Quá trình theo dõi lộ trình thông qua các công cụ này rất đơn giản:
+- Hệ điều hành gửi gói tin google.com, giá trị TTL(Time To Live) được đặt thành 1.
+Gói tin được định tuyến trên mạng và bộ định tuyến đầu tiên giảm TTL đi 1, giữ nguyên ở mức 0. Điều này khiến bộ định tuyến loại bỏ gói tin và gửi "Đã vượt quá thời gian ICMP" trở lại nguồn.
+Máy khách tăng TTL lên 1, cho phép gói tin được định tuyến qua một bước nhảy bổ sung.
+Quá trình này được lặp lại, tăng TTL thêm 1 cho đến khi đạt được đích.
+
+*  DNS(Domain Name System  *
+- DNS được sử dụng để ánh xạ các ứng dụng, thông qua tên, đến địa chỉ IP. Ví dụ, nếu bạn muốn sử dụng trình duyệt của mình để truy cập http://google.com, trước tiên trình duyệt phải gửi yêu cầu đến máy chủ DNS để phân giải địa chỉ IP đằng sau google.com
+Hệ thống thường được cấu hình với máy chủ tên miền chính và phụ. Các thiết lập này có thể được cấu hình thủ công hoặc được cung cấp bởi máy chủ DHCP. Điều này cho phép hệ thống máy tính của chúng tôi tiếp cận máy chủ DNS để máy chủ này giải quyết cho chúng tôi.
+Sau đó, máy chủ DNS chịu trách nhiệm giải quyết yêu cầu. Sau đó, nó sẽ tiến hành kiểm tra bộ nhớ đệm của riêng mình để xem liệu nó đã biết câu trả lời hay chưa. Mỗi câu trả lời DNS có thể được lưu vào bộ nhớ đệm, được lưu trữ tạm thời để tăng tốc các yêu cầu trong tương lai, trong một TTL ("Thời gian tồn tại") nhất định. TTL thường được đặt thành một vài phút, ví dụ 10 phút.
+Nếu máy chủ DNS không có câu trả lời trong bộ nhớ đệm, máy chủ sẽ tiến hành kiểm tra xem ai chịu trách nhiệm đưa ra câu trả lời. Điều này được thực hiện thông qua một quy trình đệ quy bao gồm việc yêu cầu một hệ thống phân cấp các máy chủ tên mà chắc chắn sẽ khiến yêu cầu DNS kết thúc tại Máy chủ tên có thẩm quyền.
+- Bây giờ bạn có thể thử tra cứu DNS bằng Windows hoặc Linux. Từ một thiết bị đầu cuối dòng lệnh trên Windows, nhập nslookup w3schools.com, hoặc trên Linux, nhập dig w3schools.com. Bạn sẽ thấy đầu ra như thế này:
+Địa chỉ IP của w3schools.com có ​​thể được nhìn thấy trong PHẦN TRẢ LỜI ;; Khi ảnh chụp màn hình này được chụp, địa chỉ IP đằng sau tên w3schools.com là 66.29.212.110 .
+Authoritative Name Server là máy chủ DNS chịu trách nhiệm đưa ra câu trả lời chắc chắn cho một câu hỏi. Ví dụ, địa chỉ IP của google.com sẽ được trả lời bởi máy chủ tên có thẩm quyền của họ và chúng ta có thể thấy máy chủ này bằng cách truy vấn nó:
+- Tìm máy chủ tên có thẩm quyền trên Windows:   nslookup -type=SOA google.com
+- Tìm máy chủ tên có thẩm quyền trên Linux: dig -t SOA google.com
+
+*  DHCP(Dynamic Host Configuration Protocol")
+- Như tên gọi của nó, giao thức DHCP cho phép bất kỳ hệ thống nào trên mạng kết nối đến máy chủ và nhận cấu hình. Cấu hình như vậy thường bao gồm nhận địa chỉ IP và phạm vi mạng, cổng mặc định và máy chủ DNS.
+- DHCP cho phép quản lý dễ dàng các máy khách tham gia và rời khỏi mạng.
+- Nếu bạn tò mò không biết mình có đang sử dụng DHCP không, bạn có thể nhập ipconfig /allvào hệ thống Windows và tìm "DHCP Enabled: Yes" trong kết quả đầu ra. Máy tính của bạn có thể có nhiều giao diện mạng
+
+*  VPN(Virtual Private Network)  *
+- VPN là hệ thống cho phép hai hệ thống thiết lập các hình thức mã hóa để giao tiếp, cho phép lưu lượng mạng được mã hóa khi truyền tải. Nhiều VPN là kiến ​​trúc máy khách đến máy chủ, cho phép máy khách truy cập nhiều dịch vụ đằng sau VPN. VPN do nơi làm việc của bạn lưu trữ cũng có khả năng cung cấp quyền truy cập vào các tài nguyên mà nếu không thì chỉ có thể truy cập từ bên trong.
+- Một số dịch vụ VPN được thiết kế để bảo vệ quyền riêng tư của người dùng và mã hóa dữ liệu khi truyền. Các dịch vụ này cho phép người dùng gửi dữ liệu mạng qua VPN, ngụy trang hiệu quả địa chỉ IP của người dùng khi duyệt Internet.
+==>Nói chung, sử dụng VPN là một biện pháp tốt để bảo mật thông tin liên lạc mạng của bạn, tuy nhiên chúng ta không nên sử dụng bất kỳ loại dịch vụ VPN nào. Các dịch vụ VPN miễn phí đôi khi có thể có hại, kiểm tra, đọc và lưu trữ dữ liệu nhạy cảm của bạn.
+
+
+@  CS Network Transport  @
+*  In-Depth Transport and Link Layers  *
+- Hệ thống máy tính thường cần giao tiếp với các hệ thống khác; điều này được thực hiện bằng cách đặt chúng trên cùng một mạng. Có một số công nghệ khác nhau để cho phép máy tính giao tiếp qua các loại mạng khác nhau. Trong phần này, chúng ta sẽ đi sâu hơn vào các giao thức được sử dụng trong hầu hết các mạng.
+- Các mạng chúng ta đang sử dụng bao gồm nhiều giao thức, một số được nêu trong lớp này. Ngoài ra còn có nhiều giao thức khác đang được sử dụng trong mạng, tất cả đều có khả năng gây ra rủi ro bảo mật liên quan đến chúng.
+
+
+*  TCP (Transmission Control Protocol)  *
+- Giống như IP sử dụng địa chỉ IP để định địa chỉ, TCP và UDP sử dụng cổng. Một cổng, được chỉ định bằng một số từ 0 đến 65535, quyết định dịch vụ mạng nào sẽ xử lý yêu cầu. 
+- Trong hình bên dưới, chúng ta có thể thấy một gói tin TCP và cách nó trông như thế nào khi bất kỳ ai kiểm tra lưu lượng truy cập trên mạng.
+==>Chúng ta có thể thấy đồ họa hiển thị 16 bit cho cả cổng nguồn và đích, điều này cũng tương tự đối với UDP. Số thứ tự và số xác nhận được sử dụng trong bắt tay ba chiều và để truyền dữ liệu một cách đáng tin cậy. Chúng ta cũng có thể thấy các bit điều khiển được sử dụng để chỉ ra loại gói tin đó là gì. Các tiêu đề khác cũng đóng vai trò quan trọng, nhưng nằm ngoài phạm vi bảo mật.
+
+*  TCP 3-Way-Handshake  *
+- TCP sử dụng bắt tay ba chiều để cho phép hai hệ thống tham gia giao tiếp. Bắt tay sử dụng 32 bit số PRNG ("Pseudo Random Number Generator") để thiết lập bắt tay. Bắt tay thực thi rằng cả hai bên đều có ý định giao tiếp.
+
+*  Spoofing Traffic(giao thông giả mạo)  *
++) TCP có tính bảo mật được tích hợp vào giao thức, nhưng nó dựa vào sức mạnh của các trình tạo số PRNG ("Pseudo Random Number Generator"). Nếu có thể đoán được số thứ tự của các bên giao tiếp, tính bảo mật của TCP có thể bị xâm phạm theo nghĩa là kẻ tấn công có thể tham gia vào các giao tiếp giả mạo qua TCP.
++) Nhiều giao thức dễ bị giả mạo, nhưng TCP có khả năng chống lại điều này. Các giao thức như UDP và ICMP không cung cấp khả năng bảo vệ tương tự.
+Việc giả mạo các gói tin thường được thực hiện bởi những kẻ tấn công 
+có quyền root/hệ thống, tức là những người có đặc quyền cao nhất trên Hệ điều hành. Lý do là vì Hệ điều hành thực thi việc sử dụng API buộc người dùng phải tuân thủ các quy tắc giao tiếp như được chỉ định trong RFC ("Yêu cầu bình luận"). Nếu kẻ tấn công không có đặc quyền cao nhất, họ sẽ không thể tạo các gói tin của riêng mình trên mạng.
+
+*  UDP (User Datagram Protocol)  *
+-)UDP được sử dụng cho lưu lượng không cần khả năng phục hồi và bảo mật của TCP, thường là các ứng dụng như VOIP, nhưng trong thế giới hiện đại, ngày càng có nhiều ứng dụng sử dụng UDP để hỗ trợ truyền gói tin nhanh với khả năng phục hồi và bảo mật được tích hợp vào các cấp cao hơn của mô hình OSI(Open Systems Interconnection và được phát triển bởi ISO(International Organization for Standardization)) ; QUIC là một ví dụ về điều này.
+-)Khi xem UDP Header, chúng ta có thể thấy cùng một cổng Nguồn và Đích đang được sử dụng, nhưng không có số thứ tự hoặc bit điều khiển. Giao thức này có ít chi phí hơn nhiều, dẫn đến việc truyền dữ liệu nhanh hơn.
+==>Vì UDP không có các tính năng như Bắt tay 3 chiều nên UDP có thể dễ dàng bị giả mạo.
+
+*  Switch Networks  *
+- Hệ thống được kết nối với LAN ("Mạng cục bộ") thông qua Switch. Switch sử dụng địa chỉ MAC ("Media Access Control") để định địa chỉ, không phải địa chỉ IP phổ biến hơn. Switch chuyển tiếp lưu lượng qua Mạng cục bộ, tức là mạng gia đình của bạn hoặc trong các chi nhánh của tổ chức bạn. Địa chỉ MAC được thiết kế để duy nhất, nhưng bất kỳ ai cũng có thể thay đổi Địa chỉ MAC của họ miễn là họ có quyền quản trị viên.
+  Địa chỉ MAC được xác định bởi 6 octet, ví dụ: FC:F8:AE:12:34:56
+Chú thích:  Ba octet đầu tiên biểu thị tổ chức sản xuất thiết bị giao tiếp, được gọi là OUI ("Organizational Unique Identifier"). Địa chỉ MAC ở trên được gán cho Intel Corporate. Bạn có thể tìm kiếm Địa chỉ MAC ở nhiều nơi, ví dụ: https://www.adminsub.net/mac-address-finder/intel.
+                   Ba octet cuối cùng được xác định bởi nhà sản xuất.
+
+*  ARP(Address Resolution Protocol)  *
+- ARP ("Address Resolution Protocol") là giao thức cho phép hệ thống máy tính biết địa chỉ MAC nào thuộc về địa chỉ IP nào. Nếu lưu lượng phải được định tuyến, hệ thống máy tính sẽ chuyển tiếp lưu lượng đến Default Gateway được cấu hình trên hệ thống.
+- ARP, giống như DNS, là một giao thức phân giải một địa chỉ thành một địa chỉ khác. Mỗi khi một hệ thống cố gắng giao tiếp với một địa chỉ IP trên LAN, nó sẽ kiểm tra bộ đệm ARP của nó để xem liệu gần đây đã được phân giải hay chưa.
+  Bạn có thể kiểm tra ARP của riêng bạn. Chỉ cần chạy lệnh arp -atrên cả Linux hoặc Windows. Điều này cho biết hệ thống của bạn đã giao tiếp với hệ thống nào gần đây.
+Ví dụ:
+Alice: Does anyone know the MAC address of 192.168.10.10?
+Bob: Sure thing Alice, here is my MAC Address.
+
+*  VLAN(Virtual LAN)  *
+- VLAN, thường được gọi là VLAN riêng, là một cách để Switch nhúng thẻ (hoặc VLAN ID) vào Frame. Nhiều Switch sau đó có thể đảm bảo rằng các hệ thống máy tính trên LAN chỉ có thể giao tiếp với một số hệ thống khác, tức là các hệ thống khác có cùng VLAN ID.
+
+@  CS Firewalls  @
+*  Firewalls  *
+- Tường lửa là một thành phần kiến ​​trúc trung tâm của bất kỳ mạng nào. Chúng được thiết kế để ngăn chặn mọi lưu lượng mạng, ngoại trừ lưu lượng mà chúng tôi cho phép. Tường lửa hoạt động trên Lớp 4, thường kiểm soát quyền truy cập TCP và UDP vào các tài sản nội bộ. Tường lửa thế hệ tiếp theo hoạt động trên tất cả các lớp của mô hình OSI, bao gồm Lớp 7.
+Lưu lượng truy cập vào mạng, ví dụ thông qua Tường lửa, được gọi là lưu lượng truy cập vào. Lưu lượng truy cập ra được gọi là lưu lượng truy cập ra.
+- Tường lửa lớp 4:
+Tường lửa truyền thống là Tường lửa lớp 4 với các tính năng như:
++) NAT
++) Lộ trình
++) Chặn hoặc Cho phép lưu lượng truy cập
++) Theo dõi các kết nối mạng đang hoạt động
++) Hỗ trợ kết nối VPN
+! Lưu ý ! : Các Tường lửa này thường rẻ hơn và cung cấp thông lượng cao hơn trên mạng so với Tường lửa thế hệ tiếp theo hiện đại hơn.
+
+*   NGFW(Next-Generation Firewalls)  *
+- Tường lửa hiện đại có khả năng mở rộng hơn nhiều so với Tường lửa lớp 4. Những khả năng này thường là các tính năng bảo mật.
+# Vị trí thông qua cơ sở dữ liệu vị trí địa lý. Điều này có nghĩa là Tường lửa có thể chặn hoặc cho phép hành động dựa trên vị trí của người dùng. Dịch vụ vị trí không phải lúc nào cũng chính xác và thường có thể dễ dàng bị bỏ qua bằng cách sử dụng dịch vụ VPN hoặc bằng cách sử dụng các dịch vụ khác như trạm nhảy để tấn công.
+# Người sử dụng
+# Ứng dụng
+# Phiên họp
+# Cảng và dịch vụ
+# Địa chỉ IP
+- Các tính năng khác của NGFW bao gồm:
+# Xác định và kiểm soát các ứng dụng trên mạng.
+# Nó có thể được ảo hóa để chạy như một Tường lửa phần mềm.
+# Thường cung cấp khả năng quản lý đơn giản và trực quan.
+# Hỗ trợ bảo vệ chống lại các mối đe dọa đã biết thông qua ("Hệ thống phòng chống xâm nhập").
+# Tiềm năng phát hiện và ngăn chặn các mối đe dọa chưa biết thông qua các giải pháp thử nghiệm.
+# Có khả năng quản lý lưu lượng truy cập không xác định, ví dụ như lưu lượng truy cập không thể xác định được là từ một ứng dụng.
+# Khả năng chấm dứt và kiểm tra lưu lượng được mã hóa.
+# Có thể kiểm soát người dùng, không chỉ hệ thống thông qua địa chỉ IP tương ứng.
+! Lưu ý ! : Các tính năng mà NGFW của bạn sở hữu thường phụ thuộc rất nhiều vào giấy phép đã mua và dung lượng của phần cứng chạy Tường lửa.
+
+*  Firewall Administration  *
+- Tường lửa thường có thể được quản lý thông qua ứng dụng quản lý độc quyền hoặc thông qua trình duyệt web truy cập vào mục quản lý Tường lửa qua HTTP.
+- Cổng quản lý tới Tường lửa, bao gồm các dịch vụ quản lý khác của một tổ chức, lý tưởng nhất là nên được phân đoạn khỏi quyền truy cập của người dùng thông thường. Lý tưởng nhất là phân đoạn các dịch vụ quản lý được kết nối với thư mục người dùng của tổ chức, ví dụ như môi trường Active Directory cho Windows.
+
+*  Segmentation  *
+- Tường lửa có thể phân đoạn lưu lượng giữa máy chủ và hệ thống thành các phân đoạn, đôi khi được gọi là vùng. Mỗi phân đoạn chứa các dịch vụ được phép giao tiếp với nhau.
+- Bất kỳ kết nối nào đến hoặc từ phân đoạn đều phải được Tường lửa kiểm soát cẩn thận, ngăn chặn mọi kết nối trái phép tạo kết nối thành công. Các phân đoạn nhỏ hơn cung cấp nhiều sự phân tách hơn, nhưng đòi hỏi nhiều quản lý hơn.
+  Không có bất kỳ phân đoạn nào, người dùng và hệ thống có thể trao đổi trực tiếp với nhau mà không cần sự thực thi của Tường lửa. Đây được gọi là mạng phẳng.
+- Thêm phân đoạn, chúng ta có thể hình dung các phân đoạn đại diện cho các dịch vụ, trong đó mỗi phân đoạn là một dịch vụ được cung cấp trong tổ chức. Mỗi phân đoạn có thể chứa các máy chủ khác nhau chịu trách nhiệm vận hành dịch vụ. Giao tiếp trong phân đoạn được phép, nhưng mọi quyền truy cập vào và ra khỏi phân đoạn đều được Tường lửa kiểm soát.
+  Một ý tưởng phân đoạn khác là kiểm soát các phân đoạn dựa trên chức năng của chúng, ví dụ như nhóm các ứng dụng web trong một phân đoạn với các ứng dụng web khác, cơ sở dữ liệu trong một phân đoạn và các loại dịch vụ khác trong phân đoạn của chúng. 
+! Lưu ý ! : Một thư mục người dùng rất phổ biến là Windows Active Directory của Microsoft. Nó chứa thông tin về người dùng, máy tính và nhóm mà tổ chức nắm giữ. 
+
+- Loại phân đoạn tốt nhất và an toàn nhất được gọi là kiến ​​trúc không tin cậy, buộc tất cả các hệ thống trên mạng phải được phép giao tiếp rõ ràng với các dịch vụ khác nhau.
+- Để dễ dàng quản lý các quy tắc Tường lửa, quản lý Tường lửa được kết nối lý tưởng với thư mục người dùng của tổ chức. Điều này có thể cho phép quản trị viên Tường lửa tạo các quy tắc cẩn thận dựa trên trách nhiệm của nhân viên, cho phép tổ chức thêm và xóa các quyền được áp dụng trên mạng mà không cần yêu cầu quản trị viên Tường lửa thay đổi bất cứ khi nào có thay đổi vai trò. Đôi khi điều này được gọi là kiểm soát chính sách dựa trên người dùng. Ví dụ bao gồm:
+# Quản trị viên CNTT phải có khả năng sử dụng các giao thức quản lý cho các dịch vụ khác nhau.
+# Nhân viên HR nên được phép truy cập HTTPS vào nền tảng HR.
+# Nhân viên bộ phận trợ giúp chỉ có thể truy cập vào các dịch vụ liên quan đến bộ phận trợ giúp.
+# Có thể xác định và cung cấp cho người dùng không xác định được.
+
+*  IPS (Intrusion Prevention System) and IDS (Intrusion Detection System)  *
+- Đôi khi các hệ thống IPS và IDS được triển khai như các hệ thống độc lập trên mạng, nhưng thông thường chúng được bao gồm trong NGFW.
+- Hệ thống IPS và IDS có chữ ký, thuật toán và phương pháp tìm kiếm để phát hiện các cuộc tấn công vào mạng hoặc máy chủ. IDS hoặc IPS được triển khai trên máy chủ được gọi là HIDS (Host Intrusion Detection System).
+- Trong khóa học này, thuật ngữ IDS và IPS được sử dụng thay thế cho nhau vì sự khác biệt giữa chúng thường chỉ là vấn đề cấu hình cách chúng hoạt động. Hệ thống IPS được định vị theo cách có thể phát hiện và chặn các mối đe dọa, trong khi hệ thống IDS chỉ có khả năng phát hiện các mối đe dọa.
+- Hệ thống IPS có thể được sử dụng để phát hiện và chặn kẻ tấn công và thường dựa vào việc kiểm tra và cập nhật thường xuyên trong lưu lượng được mã hóa.
+
+! Lưu ý ! : Một tính năng rất hữu ích của IDS và IPS là cập nhật thường xuyên các chữ ký mới về các mối đe dọa đang phát triển từ các nhà cung cấp. Điều này cho phép người bảo vệ có thể yên tâm rằng các mối đe dọa mới sẽ bị chặn khi tường lửa được cập nhật với các bản cập nhật mới.
+
+
+*  URL Filtering  *
+- NGFW cũng có thể bảo vệ nội dung được truy cập qua HTTP. Tường lửa có thể tra cứu các tên miền trong cơ sở dữ liệu chứa danh sách các tên miền và phân loại tương ứng. Sau đó, tường lửa có thể chỉ thực thi các danh mục tên miền được chấp nhận mà người dùng cho phép, ví dụ tin tức được phép trong khi cờ bạc thì không.
+- Các yếu tố như tuổi và hiệu lực của tên miền cũng có thể được kiểm tra, ngăn chặn người dùng truy cập vào các tên miền mới được tạo và chưa được phân loại hoặc kiểm tra các hoạt động gian lận bằng cách phân tích nội dung của tên miền.
+Thay vì từ chối quyền truy cập vào các trang web, Tường lửa có thể chặn yêu cầu và gửi người dùng đến cái gọi là cổng web bị giam cầm. Trên cổng này, người dùng có thể được cảnh báo về mối nguy hiểm ngay lập tức hoặc vi phạm chính sách của công ty, ví dụ như truy cập nội dung không được chấp nhận. Trong một số trường hợp, bạn có thể cho phép người dùng cung cấp lý do tại sao họ cần truy cập nội dung, sau đó cho phép họ tiếp tục nếu họ đã cung cấp lý do.
+Có thể có nhiều danh mục trong tên miền, ví dụ các trang web lưu trữ nội dung liên quan đến:
+# Tin tặc
+# Khỏa thân
+# Bạo lực
+# Lừa đảo
+# Hẹn hò
+# Nhắn tin tức thời
+# Sự giải trí
+# Dịch vụ ẩn danh
+
+*  Applications  *
+- Tường lửa có thể cố gắng xác định ứng dụng nào đang được sử dụng, không chỉ các giao thức. Nhiều giao thức có khả năng mang các ứng dụng khác, ví dụ HTTP có thể chứa hàng nghìn ứng dụng khác nhau. Tường lửa có thể cố gắng giải mã các luồng mạng trên Lớp 4 và cố gắng xác định nội dung được trình bày trên Lớp 7.
+ !Ảnh chụp màn hình cho thấy những gì người dùng có thể thấy khi một ứng dụng bị chặn: https://www.w3schools.com/cybersecurity/img_application-control.png
+
+*  Content Control  *
+- Khi các Ứng dụng được xác định, Tường lửa có thể cố gắng tiết lộ nội dung cụ thể trong các ứng dụng, ví dụ như nội dung đang được tải xuống:
+# Tài liệu Word
+# Các tệp thực thi
+# Mã nguồn
+# Các tập lệnh
+Link Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_contentcontrol.svg
+- Trong các tệp như vậy, Tường lửa có thể cố gắng xác định phần mềm độc hại, thông tin độc quyền và bí mật không được phép rời khỏi mạng và nhiều thông tin khác nữa.
+Tường lửa có thể hỗ trợ nhiều giao thức khác nhau và nội dung chạy qua chúng, ví dụ:
+# Giao thức HTTP
+# Doanh nghiệp vừa và nhỏ
+# FTP
+# IMAP và POP3
+# Giao thức SMTP
+
+*  Sandboxing  *
+-
+Mạng lưới
+Cơ bản về mạng CS
+Lớp mạng CS
+Mạng lưới vận chuyển CS
+Tường lửa CS
+Ứng dụng web CS
+
+Tấn công mạng
+Bản đồ CS & Quét cổng
+Tấn công mạng CS
+Tấn công ứng dụng web CS
+Tấn công WIFI CS
+Mật khẩu CS
+Kiểm tra thâm nhập CS &
+Kỹ thuật xã hội
+
+Phòng thủ mạng
+Hoạt động bảo mật CS
+Phản hồi sự cố CS
+
+Bài kiểm tra và chứng chỉ
+Bài kiểm tra CS
+Giáo trình CS
+Kế hoạch học tập CS
+Chứng chỉ CS
+
+Tường lửa an ninh mạng
+Tường lửa
+Tường lửa là một thành phần kiến ​​trúc trung tâm của bất kỳ mạng nào. Chúng được thiết kế để ngăn chặn mọi lưu lượng mạng, ngoại trừ lưu lượng mà chúng tôi cho phép. Tường lửa hoạt động trên Lớp 4, thường kiểm soát quyền truy cập TCP và UDP vào các tài sản nội bộ. Tường lửa thế hệ tiếp theo hoạt động trên tất cả các lớp của mô hình OSI, bao gồm Lớp 7.
+Lưu lượng truy cập vào mạng, ví dụ thông qua Tường lửa, được gọi là lưu lượng truy cập vào. Lưu lượng truy cập ra được gọi là lưu lượng truy cập ra.
+
+Tường lửa lớp 4
+Tường lửa truyền thống là Tường lửa lớp 4 với các tính năng như:
+
+NAT
+Lộ trình
+Chặn hoặc Cho phép lưu lượng truy cập
+Theo dõi các kết nối mạng đang hoạt động
+Hỗ trợ kết nối VPN
+Lưu ý : Các Tường lửa này thường rẻ hơn và cung cấp thông lượng cao hơn trên mạng so với Tường lửa thế hệ tiếp theo hiện đại hơn.
+NGFW ("Tường lửa thế hệ tiếp theo")
+Tường lửa hiện đại có khả năng mở rộng hơn nhiều so với Tường lửa lớp 4. Những khả năng này thường là các tính năng bảo mật.
+Tường lửa NGFW cũng có thể theo dõi các kết nối mạng đang hoạt động, nhưng thường cũng có khả năng theo dõi:
+
+Vị trí thông qua cơ sở dữ liệu vị trí địa lý. Điều này có nghĩa là Tường lửa có thể chặn hoặc cho phép hành động dựa trên vị trí của người dùng. Dịch vụ vị trí không phải lúc nào cũng chính xác và thường có thể dễ dàng bị bỏ qua bằng cách sử dụng dịch vụ VPN hoặc bằng cách sử dụng các dịch vụ khác như trạm nhảy để tấn công.
+Người sử dụng
+Ứng dụng
+Phiên họp
+Cảng và dịch vụ
+Địa chỉ IP
+Các tính năng khác của NGFW bao gồm:
+
+Xác định và kiểm soát các ứng dụng trên mạng.
+Nó có thể được ảo hóa để chạy như một Tường lửa phần mềm.
+Thường cung cấp khả năng quản lý đơn giản và trực quan.
+Hỗ trợ bảo vệ chống lại các mối đe dọa đã biết thông qua ("Hệ thống phòng chống xâm nhập").
+Tiềm năng phát hiện và ngăn chặn các mối đe dọa chưa biết thông qua các giải pháp thử nghiệm.
+Có khả năng quản lý lưu lượng truy cập không xác định, ví dụ như lưu lượng truy cập không thể xác định được là từ một ứng dụng.
+Khả năng chấm dứt và kiểm tra lưu lượng được mã hóa.
+Có thể kiểm soát người dùng, không chỉ hệ thống thông qua địa chỉ IP tương ứng.
+Tường lửa
+
+Lưu ý : Các tính năng mà NGFW của bạn sở hữu thường phụ thuộc rất nhiều vào giấy phép đã mua và dung lượng của phần cứng chạy Tường lửa.
+Quản trị tường lửa
+Tường lửa thường có thể được quản lý thông qua ứng dụng quản lý độc quyền hoặc thông qua trình duyệt web truy cập vào mục quản lý Tường lửa qua HTTP.
+
+Cổng quản lý tới Tường lửa, bao gồm các dịch vụ quản lý khác của một tổ chức, lý tưởng nhất là nên được phân đoạn khỏi quyền truy cập của người dùng thông thường. Lý tưởng nhất là phân đoạn các dịch vụ quản lý được kết nối với thư mục người dùng của tổ chức, ví dụ như môi trường Active Directory cho Windows.
+
+Phân đoạn
+Tường lửa có thể phân đoạn lưu lượng giữa máy chủ và hệ thống thành các phân đoạn, đôi khi được gọi là vùng. Mỗi phân đoạn chứa các dịch vụ được phép giao tiếp với nhau.
+
+Phân đoạn tường lửa
+
+Bất kỳ kết nối nào đến hoặc từ phân đoạn đều phải được Tường lửa kiểm soát cẩn thận, ngăn chặn mọi kết nối trái phép tạo kết nối thành công. Các phân đoạn nhỏ hơn cung cấp nhiều sự phân tách hơn, nhưng đòi hỏi nhiều quản lý hơn.
+
+Không có bất kỳ phân đoạn nào, người dùng và hệ thống có thể trao đổi trực tiếp với nhau mà không cần sự thực thi của Tường lửa. Đây được gọi là mạng phẳng.
+
+Tường lửa không phân đoạn
+
+Thêm phân đoạn, chúng ta có thể hình dung các phân đoạn đại diện cho các dịch vụ, trong đó mỗi phân đoạn là một dịch vụ được cung cấp trong tổ chức. Mỗi phân đoạn có thể chứa các máy chủ khác nhau chịu trách nhiệm vận hành dịch vụ. Giao tiếp trong phân đoạn được phép, nhưng mọi quyền truy cập vào và ra khỏi phân đoạn đều được Tường lửa kiểm soát.
+
+Một ý tưởng phân đoạn khác là kiểm soát các phân đoạn dựa trên chức năng của chúng, ví dụ như nhóm các ứng dụng web trong một phân đoạn với các ứng dụng web khác, cơ sở dữ liệu trong một phân đoạn và các loại dịch vụ khác trong phân đoạn của chúng. 
+
+Lưu ý : Một thư mục người dùng rất phổ biến là Windows Active Directory của Microsoft. Nó chứa thông tin về người dùng, máy tính và nhóm mà tổ chức nắm giữ. 
+Tường lửa Phân đoạn nhiều hơn
+
+Loại phân đoạn tốt nhất và an toàn nhất được gọi là kiến ​​trúc không tin cậy, buộc tất cả các hệ thống trên mạng phải được phép giao tiếp rõ ràng với các dịch vụ khác nhau.
+
+Để dễ dàng quản lý các quy tắc Tường lửa, quản lý Tường lửa được kết nối lý tưởng với thư mục người dùng của tổ chức. Điều này có thể cho phép quản trị viên Tường lửa tạo các quy tắc cẩn thận dựa trên trách nhiệm của nhân viên, cho phép tổ chức thêm và xóa các quyền được áp dụng trên mạng mà không cần yêu cầu quản trị viên Tường lửa thay đổi bất cứ khi nào có thay đổi vai trò. Đôi khi điều này được gọi là kiểm soát chính sách dựa trên người dùng. Ví dụ bao gồm:
+
+Quản trị viên CNTT phải có khả năng sử dụng các giao thức quản lý cho các dịch vụ khác nhau.
+Nhân viên HR nên được phép truy cập HTTPS vào nền tảng HR.
+Nhân viên bộ phận trợ giúp chỉ có thể truy cập vào các dịch vụ liên quan đến bộ phận trợ giúp.
+Có thể xác định và cung cấp cho người dùng không xác định được.
+Lưu ý : Một thư mục người dùng rất phổ biến là Windows Active Directory của Microsoft. Nó chứa thông tin về người dùng, máy tính và nhóm mà tổ chức nắm giữ.
+IPS ("Hệ thống phòng chống xâm nhập") và IDS ("Hệ thống phát hiện xâm nhập")
+Đôi khi các hệ thống IPS và IDS được triển khai như các hệ thống độc lập trên mạng, nhưng thông thường chúng được bao gồm trong NGFW.
+
+Hệ thống IPS và IDS có chữ ký, thuật toán và phương pháp tìm kiếm để phát hiện các cuộc tấn công vào mạng hoặc máy chủ. IDS hoặc IPS được triển khai trên máy chủ được gọi là HIDS ("Hệ thống phát hiện xâm nhập máy chủ").
+
+IPS
+Trong khóa học này, thuật ngữ IDS và IPS được sử dụng thay thế cho nhau vì sự khác biệt giữa chúng thường chỉ là vấn đề cấu hình cách chúng hoạt động. Hệ thống IPS được định vị theo cách có thể phát hiện và chặn các mối đe dọa, trong khi hệ thống IDS chỉ có khả năng phát hiện các mối đe dọa.
+Hệ thống IPS có thể được sử dụng để phát hiện và chặn kẻ tấn công và thường dựa vào việc kiểm tra và cập nhật thường xuyên trong lưu lượng được mã hóa.
+
+Lưu ý : Một tính năng rất hữu ích của IDS và IPS là cập nhật thường xuyên các chữ ký mới về các mối đe dọa đang phát triển từ các nhà cung cấp. Điều này cho phép người bảo vệ có thể yên tâm rằng các mối đe dọa mới sẽ bị chặn khi tường lửa được cập nhật với các bản cập nhật mới.
+Lọc nội dung và ứng dụng
+Tường lửa có thể cố gắng hiểu ứng dụng và nội dung nào đang đi qua mạng. Việc phát hiện như vậy có thể kích hoạt thêm các tính năng bảo mật khác như IPS để bảo vệ các hệ thống giữa Tường lửa.
+
+Lọc URL
+NGFW cũng có thể bảo vệ nội dung được truy cập qua HTTP. Tường lửa có thể tra cứu các tên miền trong cơ sở dữ liệu chứa danh sách các tên miền và phân loại tương ứng. Sau đó, tường lửa có thể chỉ thực thi các danh mục tên miền được chấp nhận mà người dùng cho phép, ví dụ tin tức được phép trong khi cờ bạc thì không.
+
+Lọc URL
+Các yếu tố như tuổi và hiệu lực của tên miền cũng có thể được kiểm tra, ngăn chặn người dùng truy cập vào các tên miền mới được tạo và chưa được phân loại hoặc kiểm tra các hoạt động gian lận bằng cách phân tích nội dung của tên miền.
+Thay vì từ chối quyền truy cập vào các trang web, Tường lửa có thể chặn yêu cầu và gửi người dùng đến cái gọi là cổng web bị giam cầm. Trên cổng này, người dùng có thể được cảnh báo về mối nguy hiểm ngay lập tức hoặc vi phạm chính sách của công ty, ví dụ như truy cập nội dung không được chấp nhận. Trong một số trường hợp, bạn có thể cho phép người dùng cung cấp lý do tại sao họ cần truy cập nội dung, sau đó cho phép họ tiếp tục nếu họ đã cung cấp lý do
+Có thể có nhiều danh mục trong tên miền, ví dụ các trang web lưu trữ nội dung liên quan đến:
+
+Tin tặc
+Khỏa thân
+Bạo lực
+Lừa đảo
+Hẹn hò
+Nhắn tin tức thời
+Sự giải trí
+Dịch vụ ẩn danh
+Các danh mục lọc URL
+
+Ứng dụng
+Tường lửa có thể cố gắng xác định ứng dụng nào đang được sử dụng, không chỉ các giao thức. Nhiều giao thức có khả năng mang các ứng dụng khác, ví dụ HTTP có thể chứa hàng nghìn ứng dụng khác nhau. Tường lửa có thể cố gắng giải mã các luồng mạng trên Lớp 4 và cố gắng xác định nội dung được trình bày trên Lớp 7.
+Nội dung
+Ảnh chụp màn hình cho thấy những gì người dùng có thể thấy khi một ứng dụng bị chặn.
+Kiểm soát ứng dụng
+
+Kiểm soát nội dung
+Khi các Ứng dụng được xác định, Tường lửa có thể cố gắng tiết lộ nội dung cụ thể trong các ứng dụng, ví dụ như nội dung đang được tải xuống:
+
+Tài liệu Word
+Các tệp thực thi
+Mã nguồn
+Các tập lệnh
+Kiểm soát nội dung
+
+Trong các tệp như vậy, Tường lửa có thể cố gắng xác định phần mềm độc hại, thông tin độc quyền và bí mật không được phép rời khỏi mạng và nhiều thông tin khác nữa.
+Tường lửa có thể hỗ trợ nhiều giao thức khác nhau và nội dung chạy qua chúng, ví dụ:
+
+Giao thức HTTP
+Doanh nghiệp vừa và nhỏ
+FTP
+IMAP và POP3
+Giao thức SMTP
+
+*  Sandboxing  *
+- Trong ngữ cảnh này, sandbox có nghĩa là để một nền tảng thực thi các tệp có thể độc hại. Sandbox ghi lại và giám sát hoạt động của tệp để xem tệp đó có độc hại hay không.
+- Sandbox thường cho phép Tường lửa chuyển tiếp các tệp thực thi đến nền tảng này và ngăn người dùng tải xuống tệp cho đến khi có phán quyết tệp đó có độc hại hay không.
+   Một hộp cát hiện đại có khả năng chạy các tệp trên nhiều nền tảng khác nhau, ví dụ:
+Windows 7, 8 và 10.
+Điện thoại Android.
+Linux
++) Các tệp thú vị để thực thi và khám phá trong hộp cát không chỉ là một tệp thực thi. Nhiều tệp có khả năng thực hiện các hành động độc hại trên hệ điều hành của người dùng của chúng tôi:
+# Tệp ZIP có nội dung để chạy
+# Tài liệu văn phòng
+# Các tập tin PDF
+# Ứng dụng Java
+J# avaScript
+# Màn hình bảo vệ
++) Có nhiều hộp cát trực tuyến mà bạn có thể tự mình thử, ngoài những gì NGFW có thể cung cấp:
+# https://www.joesandbox.com/
+# https://www.virustotal.com/
+# https://www.hybrid-analysis.com/
+# https://any.run/
+# Ngoài ra còn có các hộp cát mà bạn có thể tự cài đặt, ví dụ:
+# https://cuckoosandbox.org/
+
+*  Decrypting Traffic  *
+- Nhiều Tường lửa hỗ trợ cài đặt chứng chỉ cho phép giải mã lưu lượng. Nếu nội dung được giải mã, nội dung đó có thể được kiểm tra để tìm mối đe dọa.
+- Giải mã có thể diễn ra trên lưu lượng Egress hoặc Ingress, hoặc cả hai. Đối với lưu lượng Ingress, Tường lửa có thể bảo vệ máy chủ khỏi lưu lượng đến. Lưu lượng Egress cho phép Tường lửa bảo vệ người dùng và hệ thống cần giao tiếp ra bên ngoài.
+Link hình ảnh minh họa: https://www.w3schools.com/cybersecurity/img_firewall-decrypt.png
+- Tường lửa thường tránh giải mã lưu lượng như dữ liệu chăm sóc sức khỏe và tài chính vì điều này có thể liên quan đến quyền riêng tư và các tác động khác. Giải mã lưu lượng đòi hỏi nhiều nỗ lực hơn từ tổ chức để phân phối khóa cho khách hàng, được tường lửa sử dụng để giải mã lưu lượng.
+
+! Note !: Bạn còn nhớ lưu lượng Egress và Ingress không? Egress có nghĩa là lưu lượng rời khỏi mạng, trong khi Ingress có nghĩa là lưu lượng đến mạng.
+
+*  Unknown Traffic  *
+- Một số lưu lượng không thể được giải mã hoặc hiểu đầy đủ bởi Tường lửa. Có nhiều lý do có thể áp dụng, ví dụ như một ứng dụng độc quyền gửi dữ liệu mà Tường lửa không biết. Lưu lượng như vậy cũng có thể được phân loại là Không xác định. Quản trị viên Tường lửa nên cân nhắc chặn các ứng dụng như vậy, đặc biệt là từ các mạng được coi là có rủi ro cao.
+
+*  WAF (Web Application Firewall)  *
+- Trong khi Tường lửa có thể thực hiện tốt công việc, chúng thường không hiểu đầy đủ về khả năng của một giao thức. Vì vậy, tường lửa dành riêng cho giao thức cũng được phát triển, trong đó WAF là một trong những tường lửa phổ biến hơn.
+- WAF cho phép nhiều tính năng dành riêng cho giao thức HTTP hơn Tường lửa thông thường, giúp ngăn chặn các mối đe dọa tốt hơn.
+- Trong khi WAF cố gắng thực hiện tốt công việc chặn các mối đe dọa trên HTTP, nó thường cung cấp các tiện ích khác rất hữu ích cho các tổ chức, khiến chúng trở nên khả thi hơn nhiều so với việc chỉ chặn các mối đe dọa. Sau đây là một số ví dụ: 
+# WAF có thể giúp xây dựng dự phòng, tức là có nhiều máy chủ để cung cấp cùng một dịch vụ. Điều này cho phép các tổ chức có một dịch vụ ở chế độ khả dụng cao hơn, cho phép họ đặt một máy chủ ngoại tuyến trong khi các máy chủ khác vẫn có khả năng phục vụ người dùng đang cố gắng truy cập dịch vụ. Điều này hữu ích vì các khái niệm như vá lỗi thường yêu cầu bạn phải khởi động lại dịch vụ và dự phòng cho phép người dùng vẫn truy cập dịch vụ.
+# WAF có thể giúp thực thi các quy tắc bảo mật thực hành tốt nhất, ví dụ như một nơi duy nhất để duy trì và thực thi mã hóa, xác thực đa yếu tố và các khái niệm khác mà lớp này đề cập.
+# Nó có thể được sử dụng để phát triển một mặt trận duy nhất và cơ chế bảo vệ cho nhiều máy chủ web nằm sau WAF.
+
+!Note !: WAF là tường lửa chuyên dụng hơn nhiều để chống lại các mối đe dọa trên giao thức HTTP. Nó cũng thường có chức năng rất tiện lợi cho người quản trị.
+
+@ The HTTP Protocol
+- HTTP là giao thức cung cấp cho trình duyệt và ứng dụng của chúng tôi khả năng nhận nội dung như HTML(Hypertext Markup Language), CSS(Cascading Style Sheets), hình ảnh và video.
+
+*  URL Query Parameters and Scheme(sơ đồ)  *
+- Để truy cập ứng dụng web, chúng tôi sử dụng URL ("Uniform Resource Locator"), ví dụ: https://www.google.com/search?q=w3schools+cyber+security&ie=UTF-8
+- URL tới google.com chứa tên miền, tập lệnh đang được truy cập và Tham số truy vấn.
+- Tập lệnh chúng ta đang truy cập được gọi là /search. Dấu / chỉ ra nó được chứa trong thư mục trên cùng trên máy chủ nơi các tệp đang được phục vụ. Dấu ? chỉ ra các tham số đầu vào cho tập lệnh và dấu & phân định các tham số đầu vào khác nhau. Trong URL của chúng tôi, các tham số đầu vào là:
+q với giá trị của w3schools cyber security
+tức là với giá trị UTF-8
+Ý nghĩa của những dữ liệu đầu vào này tùy thuộc vào ứng dụng máy chủ web quyết định.
+Đôi khi bạn sẽ chỉ thấy / hoặc /? cho biết một tập lệnh đã được thiết lập để phục vụ cho việc phản hồi địa chỉ này. Thông thường, tập lệnh này giống như một tệp chỉ mục, có thể bắt tất cả các yêu cầu trừ khi có chỉ định một tập lệnh cụ thể.
++) Scheme là thứ xác định giao thức cần sử dụng. Trong trường hợp của chúng tôi, đó là phần đầu tiên của URL: https. Khi scheme không được xác định trong URL, nó cho phép ứng dụng quyết định sử dụng cái gì. Scheme có thể bao gồm toàn bộ một mảng các giao thức như:
+# Giao thức HTTP
+# HTTPS
+# FTP
+# SSH
+# Doanh nghiệp vừa và nhỏ
+
+*  HTTP Headers  *
+- Giao thức HTTP sử dụng nhiều tiêu đề, một số tùy chỉnh cho ứng dụng và một số khác được định nghĩa rõ ràng và được công nghệ chấp nhận.
+Ví dụ yêu cầu tới http://google.com:
+GET /search?q=w3schools+cyber+security&ie=UTF-8 HTTP/1.1
+Host: google.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36
+Accept: image/avif,image/webp,image/apng,image/*,*/*;q=0.8
+Referer: https://w3schools.com/
+Accept-Encoding: gzip, deflate
+Cookie: cookie1=value1;cookie2=value2
+
++) Một số tiêu đề trong HTTP:
+Header	                                              Explanation
+GET /search... HTTP/1.1	              GET is the verb we are using to access the application. Explained in detail in the section HTTP Verbs. We also see the path and query parameters and HTTP version
+Host: google.com	                              This header indicates the target service we want to use. A server can have multiple services as explained in the section on VHOSTS.
+User-Agent	                                      A client application, that is the browser in most cases, can identify itself with the version, engine and operating system
+Accept	                                              Defines which content the client can accept
+Referer: https://w3schools.com/	      If the client clicked a link from a different website the Referer header is used to say from where the client came from
+Accept-Encoding: gzip, deflate	      Can the content be compressed or encoded? This defines what we can accept
+Cookie	                                              Cookies are values sent by the server in previous requests which the client sends back in every subsequent request. Explained in detail in the section State
+
++) Với yêu cầu này, máy chủ sẽ trả lời với tiêu đề và nội dung. Ví dụ tiêu đề được hiển thị bên dưới:
+HTTP/1.1 200 OK
+Content-Type: text/html
+Set-Cookie: <cookie value>
+<website content>
+
++) Tiêu đề và nội dung phản hồi là những gì quyết định những gì chúng ta sẽ thấy trong trình duyệt của mình. Tiêu đề phản hồi HTTP được giải thích như sau:
+
+Header	                                               Explanation
+HTTP/1.1 200 OK	                               The HTTP Response code. Explained in detail in the HTTP Response Codes section
+Content-Type: text/html	                       Specifies the type of content being returned, e.g. HTML, JSON or XML
+Set-Cookie:	                                       Any special values the client should remember and return in the next request
+
+
+*  HTTP Verbs  *
+!Verb	     Used for
+GET	     Typically used to retrieve values via Query Parameters
+POST	     Used to send data to a script via values in the body of the Request sent to the webserver. Typically it involves creating, uploading or sending large quantities of data
+PUT	     Often use to upload or write data to the webserver
+DELETE	     Indicate a resource which should be deleted
+PATCH	     Can be used to update a resource with a new value
+==>Chúng được sử dụng theo yêu cầu của ứng dụng web. Các dịch vụ web Restful (REST) ​​đặc biệt hiệu quả trong việc sử dụng toàn bộ mảng HTTP Verb để xác định những gì cần thực hiện ở phía sau.
+
+*  HTTP Response Codes  *
++) Ứng dụng chạy trên máy chủ web có thể phản hồi bằng các mã khác nhau dựa trên những gì xảy ra ở phía máy chủ. Sau đây là các mã phản hồi phổ biến mà máy chủ web sẽ cấp cho máy khách mà các chuyên gia bảo mật cần biết:
+
+Code	     Explanation
+200	            Application returned normally (ứng dụng đã trở lại bình thường)
+301	            Server asks client to permanently remember a redirect to a new location where the client should access (Máy chủ yêu cầu máy khách ghi nhớ vĩnh viễn lệnh chuyển hướng đến vị trí mới mà máy khách cần truy cập)  
+302	            Redirect temporarily. Client doesn't need to save this reply (chuyển hướng tạm thời. Khách hàng không cần lưu lại phản hồi này)
+400	            The client made an invalid request (khách hàng đã đưa ra yêu cầu không hợp lệ)
+403	            The client is not allowed to access this resource. Authorization is required (khách hàng không được phép truy cập vào tài nguyên này. Cần phải có sự cho phép)
+404	            The client tried to access a resource which does not exist (khách hàng cố gắng truy cập vào một nguồn tài nguyên không tồn tại)
+500	            The server errored in trying to fulfill the request (máy chủ đã gặp lỗi khi cố gắng thực hiện yêu cầu)
+
+*  REST  *
+- Dịch vụ nghỉ ngơi, đôi khi được gọi là dịch vụ RESTful, sử dụng toàn bộ sức mạnh của HTTP Verbs và HTTP Response Codes để tạo điều kiện thuận lợi cho việc sử dụng ứng dụng web. Dịch vụ RESTful thường sử dụng một số phần của URL làm tham số truy vấn để xác định những gì xảy ra trên ứng dụng web. REST thường được sử dụng bởi API (Application Programming Interfaces)
+- URL REST sẽ gọi chức năng dựa trên các thành phần khác nhau của URL.
+- Một ví dụ về URL REST: http://example.com/users/search/w3schools
+URL này sẽ gọi chức năng như một phần của URL thay vì Tham số truy vấn. Chúng ta có thể giải mã URL như sau:
+Parameter	                       Comment
+users	                              Accessing the users part of the functionality
+search	                      Accessing the search feature
+w3schools	                      The user to search for
+
+*  Sessions(phiên) & State  *
+- Không có cách tích hợp nào để máy chủ xác định khách truy cập quay lại trong HTTP. Để máy chủ web xác định người dùng, một giá trị bí mật phải được truyền đạt đến và đi từ Máy khách trong mỗi yêu cầu. Điều này thường được thực hiện thông qua Cookie trong tiêu đề, tuy nhiên, các cách khác cũng phổ biến như thông qua các tham số GET và POST hoặc các tiêu đề khác. Không nên truyền trạng thái qua các tham số GET vì các tham số như vậy thường được ghi lại trên máy chủ hoặc ở các trung gian như proxy.
++) Sau đây là một số ví dụ về Cookie phổ biến cho phép ứng dụng trên máy chủ web kiểm soát phiên và trạng thái:
+     PHIÊN BẢN PHP
+     Mã số
+    ASP.NET_SessionID
+- Các giá trị này biểu thị một trạng thái nhất định, thường được gọi là phiên, trên máy chủ. Trạng thái này biểu thị những thứ như:
+  Bạn đã đăng nhập với tư cách là người dùng nào?
+  Quyền hạn và thẩm quyền
+- Trạng thái cũng có thể được lưu trên máy khách. Điều này liên quan đến việc máy chủ gửi tất cả các trạng thái đến máy khách và dựa vào máy khách gửi lại tất cả các mục. Các triển khai như vậy dựa vào mã hóa để kiểm tra tính toàn vẹn của trạng thái mà máy khách đang yêu cầu. Ví dụ về các triển khai sử dụng điều này được liệt kê dưới đây:
+JWT ("Mã thông báo web JSON")
+Trạng thái View của ASP.Net
+==> Trong Google Chrome, cookie được xác định trong tab Ứng dụng ở trên. 
+
+! Note !: Lưu ý : Bạn có nghĩ ra lý do tại sao cookie lại bị ẩn trong ảnh chụp màn hình để bạn không thể đọc được không?
+                         - Bảo mật thông tin
+                         - Chính sách bảo mật
+                         - Thiết kế giao diện
+                         - Tráng lừa đảo
+
+*  Virtual Hosts  *
+- Một máy chủ web có thể xử lý nhiều ứng dụng thông qua Virtual Host, thường được viết tắt là Vhost. Để tạo điều kiện truy cập vào các Virtual Host khác, máy chủ web thường đọc tiêu đề Host của yêu cầu của máy khách và dựa trên giá trị này để gửi yêu cầu đến đúng ứng dụng.
+
+*  URL Encoding(mã hóa)  *
+- Để ứng dụng có thể truyền nội dung an toàn giữa máy chủ và máy khách, một số ký tự phải được mã hóa để đảm bảo chúng không ảnh hưởng đến giao thức. Để bảo toàn tính toàn vẹn của thông tin liên lạc, mã hóa URL được sử dụng.
+- Mã hóa URL thay thế các ký tự không an toàn bằng % và hai chữ số thập lục phân. 
+Ví dụ:
+# Phần trăm được thay thế bằng %25
+# Khoảng trắng được thay thế bằng %20
+# Trích dẫn được thay thế bằng %22
+
+! Note !: Lưu ý : Hãy thử Cyber ​​Chef và xem liệu bạn có thể tiết lộ thông điệp sau trong các ký tự được mã hóa URL chứa thông tin gì không: %48 %65 %6c %6c %6f %20 %64 %65 %61 %72 %20 %77 %33 %73 %63 %68 %6f %6f %6c %73 %20 %73 %74 %75 %64 %65 %6e %74 %2e %20 %48 %6f %70 %65 %20 %79 %6f %75 %20 %61 %72 %65 %20 %6c %65 %61 %72 %6e %69 %6e %67 %20 %73 %6f %6d %65 %74 %68 %69 %6e %67 %20 %74 %6f %64 %61 %79 %21
+!! Khái niệm !!: Thập lục phân, hay còn gọi là hệ cơ số 16 (hexadecimal), là một hệ thống số sử dụng 16 ký tự khác nhau để biểu diễn giá trị. Các ký tự này bao gồm:
+Các chữ số từ 0 đến 9: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+Các chữ cái từ A đến F: A (10), B (11), C (12), D (13), E (14), F (15)
+
+*  JavaScript  *
+- Để hỗ trợ nội dung động, trình duyệt sử dụng ngôn ngữ kịch bản JavaScript. Điều này cho phép các nhà phát triển lập trình các giải pháp sẽ chạy trên máy khách, cho phép nội dung web tương tác và "sống động" hơn.
+- JavaScript cũng liên quan đến nhiều cuộc tấn công vào các ứng dụng web và ứng dụng khách như trình duyệt
+
+*  Encryption with TLS  *
+- Giao thức HTTP không hỗ trợ mã hóa cho dữ liệu đang truyền, do đó, một lớp bao bọc xung quanh HTTP được thêm vào để hỗ trợ mã hóa. Điều này được biểu thị bằng chữ S theo sau HTTP, tức là HTTPS.
+- Mã hóa trước đây là SSL ("Secure Sockets Layer"), nhưng đã bị loại bỏ. Thay vào đó, TLS ("Transport Layer Security") thường được sử dụng để thực thi mã hóa.
+
+@ CS Network Mapping & Port Scanning
+-Nếu chúng ta muốn bảo vệ, trước tiên chúng ta cần biết phải bảo vệ cái gì. Quản lý tài sản thường dựa vào Bản đồ mạng để xác định hệ thống nào đang hoạt động trên mạng.
+- Quản lý tài sản và biết những gì bạn tiết lộ trên mạng, bao gồm cả dịch vụ nào được lưu trữ là rất quan trọng đối với bất kỳ ai muốn bảo vệ mạng của mình.
+
+*  Nmap - The Network Mapper  *
+- Nmap từ lâu đã được coi là trình quét cổng tiêu chuẩn cho cả kỹ sư mạng và chuyên gia bảo mật. Chúng ta có thể sử dụng nó để khám phá tài sản để tấn công hoặc phòng thủ.
+
+*  Network Mapping  *
+- Một cách để xác định máy chủ đang hoạt động trên mạng là gửi lệnh ping, tức là ICMP Echo Request, đến tất cả các Địa chỉ IP trong mạng. Điều này thường được gọi là Ping Sweep.
+- Cách tiếp cận này không tốt lắm trong việc khám phá tài sản. Có khả năng là các hệ thống trên mạng sẽ bỏ qua các ping đến, có thể là do Tường lửa chặn chúng hoặc do Tường lửa dựa trên máy chủ. Tường lửa dựa trên máy chủ chỉ đơn giản là tường lửa được triển khai trên hệ thống thay vì trên mạng. 
++) Một cách tiếp cận tốt hơn bao gồm việc gửi các loại gói tin khác nhau đến một hệ thống để thử yêu cầu bất kỳ loại câu trả lời nào để xác định xem hệ thống có hoạt động hay không. Ví dụ, Nmap sẽ gửi các gói tin sau đến hệ thống để thử gây ra phản hồi:
+# Yêu cầu phản hồi ICMP
+# Gói tin TCP SYN đến cổng 443
+# Gói tin TCP ACK đến cổng 80
+# Yêu cầu dấu thời gian ICMP
+Dựa trên các thông số kỹ thuật TCP, tức là các quy tắc giao tiếp, một hệ thống luôn phải tham gia vào quá trình bắt tay ba chiều trước khi bắt đầu giao tiếp. Nmap dường như cố tình phá vỡ các quy tắc với các gói tin ở trên. Bạn có thể phát hiện ra gói tin nào không hoạt động như hệ thống mong đợi không? 
+Gửi một gói tin TCP ACK đến cổng 80 không tuân thủ các quy tắc của tiêu chuẩn TCP. Nmap thực hiện điều này cụ thể để cố gắng khiến hệ thống đích trả lời. Để gửi các gói tin không tuân thủ các quy tắc, Nmap phải chạy với cấp quyền cao nhất, ví dụ như root hoặc quản trị viên cục bộ. Hầu hết các trình quét cổng sẽ chính xác hơn vì lý do này.
+Có thể vô hiệu hóa Network Mapping bằng Nmap với cờ -Pn. Nmap hiện sẽ coi tất cả IP/hệ thống là đang hoạt động và chuyển trực tiếp đến quét cổng.
+
+Hãy thử ngay tại nhà nếu bạn muốn. Cẩn thận, nếu bạn đang ở trong môi trường công ty, hãy luôn xin phép trước khi bắt đầu chạy máy quét vì bạn không muốn vi phạm bất kỳ quy tắc nào của không gian làm việc. Để thử Nmap ngay, hãy làm theo các bước đơn giản sau: 
+   Hãy tải xuống Nmap tại https://nmap.org . Hãy đảm bảo rằng bạn tải xuống phiên bản phù hợp với hệ điều hành của mình
+   Cài đặt Nmap và khởi chạy công cụ từ thiết bị đầu cuối dòng lệnh
+   Tìm địa chỉ IP cục bộ và mạng con của bạn
+   Chạy Nmap để quét để xem nó có thể phát hiện ra những loại hệ thống nào: nmap -vv IP/netmask
+   Chúng tôi đang thêm hai cờ -v để báo cho Nmap biết rằng chúng tôi muốn xuất ra thông tin chi tiết, điều này làm cho quá trình quét trở nên thú vị hơn khi theo dõi trong khi hoàn tất. 
+
+*  ARP Scan  *
+- Giao thức ARP nằm trong mạng LAN, nhưng nếu máy chủ bạn cần khám phá nằm trên mạng LAN, chúng ta có thể sử dụng giao thức này để thử tiết lộ các hệ thống trên mạng. Chỉ cần lặp lại tất cả các địa chỉ IP khả dụng trên mạng LAN bằng giao thức ARP, chúng ta đang cố gắng buộc các hệ thống trả lời.
+
+Bản quét trông như thế này:
+Eve: Please Provide Mac Address of system 192.168.0.1
+Eve: Please Provide Mac Address of system 192.168.0.2
+Eve: Please Provide Mac Address of system 192.168.0.3
+Eve: Please Provide Mac Address of system 192.168.0.4
+Eve: Please Provide Mac Address of system 192.168.0.5-254
+Default Gateway: 192.168.0.1 is me and my MAC Address is AA:BB:CC:12:34:56
+Bob: 192.168.0.3 is me and my MAC Address is: BB:CC:DD:12:34:56
+Alice: 192.168.0.4 is me and my MAC Address is: CC:DD:EE:12:34:56
+
+! Lưu ý! : Quét ARP là một cách đơn giản và hiệu quả để tìm máy chủ trên mạng LAN, nhưng không phải bên ngoài mạng LAN.
+
+*  Port Scanning  *
+- Quét cổng được thực hiện để cố gắng xác định những dịch vụ nào chúng ta có thể kết nối. Mỗi dịch vụ lắng nghe cung cấp bề mặt tấn công có khả năng bị kẻ tấn công lợi dụng. Do đó, điều quan trọng là phải tìm hiểu những cổng nào đang mở.
+! Kẻ tấn công muốn biết ứng dụng nào đang lắng nghe trên mạng. Các ứng dụng này đại diện cho cơ hội cho kẻ tấn công. Có thể có lỗ hổng cho phép chúng tấn công thành công vào tổ chức.
+- Quét cổng hoạt động bằng cách gửi các gói tin đến một ứng dụng và tìm kiếm bất kỳ phản hồi nào. Điều này cực kỳ dễ dàng đối với TCP, vì nếu một dịch vụ TCP khả dụng, nó sẽ luôn trả lời bằng một gói tin SYN/ACK. Tuy nhiên, đối với UDP thì khó hơn. Để phát hiện xem dịch vụ có khả dụng hay không, trong hầu hết các trường hợp, kẻ tấn công phải gửi đầu vào cụ thể buộc ứng dụng phải trả lời. Hầu hết các ứng dụng được lưu trữ trong UDP sẽ không trả lời trừ khi Khách hàng gửi chính xác đầu vào cần thiết để tham gia vào giao tiếp.
+
+*  TCP Port Scanning  *
+- TCP là một giao thức dễ quét vì tiêu chuẩn TCP quy định rằng các hệ thống phải trả lời bằng SYN/ACK khi nhận được SYN. ​​Chúng ta có thể gửi một gói SYN đến tất cả 65536 cổng và ghi lại tất cả SYN/ACK trả về và kết luận các cổng được mở dựa trên phản hồi của SYN/ACK. Khi không nhận được phản hồi, chúng ta có thể cho rằng cổng đã bị đóng hoặc được lọc bằng ví dụ như Tường lửa.
+
+*  UDP Port Scanning  *
+- Với UDP, khó xác định xem một cổng có hoạt động hay không. Đối với các cổng UDP, máy quét không thể dựa vào SYN/ACK. Trên thực tế, máy quét gần như luôn phải dựa vào việc khiến dịch vụ lắng nghe gây ra một số loại phản hồi.
+- Với rất nhiều cổng có khả năng mở và các dịch vụ khác nhau chỉ trả lời đúng loại dữ liệu, việc quét tất cả các cổng trong thời gian hợp lý sẽ tốn nhiều thời gian và khó khăn.
+
+*  Useful Nmap Scan Types and Options  *
+- Có rất nhiều máy quét, tuy nhiên trong phần này chúng tôi sẽ tập trung vào cách tận dụng tối đa tiềm năng của Nmap.
++) Có thể yêu cầu Nmap quét các cổng phổ biến nhất bằng đối số --top-ports.
+         nmap --top-ports 100 <target>
++) Máy quét có thể thử xác định các phiên bản của ứng dụng đang lắng nghe đằng sau một cổng. Điều này được gọi là quét dịch vụ và có thể được bật bằng cờ -sV.
+         nmap -sV <target>
++) Nmap có nhiều tập lệnh tích hợp được thiết kế để nhắm mục tiêu vào một dịch vụ cụ thể và tương tác với dịch vụ đó. Các tập lệnh có thể thực hiện đủ mọi thứ như lấy thông tin từ dịch vụ hoặc cố gắng khai thác thông tin đó. Chúng ta có thể bật trình quét tập lệnh bằng cờ -sC. Điều này chỉ cho phép kiểm tra an toàn, do đó không có hành vi từ chối dịch vụ hoặc cố gắng khai thác.
+         nmap -sC <target>
++) Có thể thực hiện phát hiện Hệ điều hành bằng máy quét, cho phép máy quét thử xác định hệ điều hành nào đang chạy. Máy quét sử dụng nhiều tham số khác nhau để thử đo lường và ước tính khả năng xảy ra của hệ điều hành đó. Có thể bật tính năng này bằng tham số -O.
+         nmap -O <target>
++) Chế độ hung hăng của Nmap cho phép nhiều cờ cùng một lúc. Máy quét sẽ thực hiện phát hiện phiên bản và hệ điều hành, kích hoạt máy quét tập lệnh và quét 1000 cổng phổ biến nhất. Có thể kích hoạt bằng tùy chọn -A.
+         nmap -A <target>
++) Nmap cũng có thể quét IPv6 trên tất cả các cờ trên. Nó được kích hoạt bằng cách thêm cờ -6.
+         nmap -6 <target>
+
+! Lưu ý !: Cách tốt nhất để hiểu là thực hành và trải nghiệm thực tế. Hãy tải Nmap và thử các lần quét khác nhau này trên các hệ thống trong môi trường của bạn!
+
+*  Nmap Timing Options  *
++) Quá trình quét có thể được thực hiện với nhiều tốc độ khác nhau. Tốc độ chậm hơn có ít khả năng bị hệ thống IDS phát hiện hơn, trong khi quét nhanh có thể làm quá tải hệ thống. Nmap hỗ trợ các tùy chọn sau:
+         T0 - Paranoid. Tùy chọn này dành cho những kẻ tấn công không muốn bị phát hiện. Hệ thống IDS có thể liên kết nhiều yêu cầu trong một khoảng thời gian nhất định. Tùy chọn paranoid sẽ cố gắng tránh điều này bằng cách chỉ gửi rất ít gói tin mỗi giây.
+         T1 - Lén lút. Nhanh hơn nhưng được thiết kế để tránh hệ thống IDS.
+         T2 - Lịch sự. Quét chậm, cố gắng hết sức để không làm hệ thống bị sập.
+         T3 - Bình thường. Đây chỉ là mặc định.
+         T4 - Mạnh mẽ. Quét nhanh cho kết quả nhanh. Hầu hết các hệ thống đều có thể xử lý được.
+         T5 - Điên rồ. Chúng tôi đang gửi với công suất và hiệu suất tối đa.
+
+*  Zenmap  *
+- Nmap có GUI tích hợp ( Graphical User Interface(giao diện) ) dài với các công cụ khác nữa. GUI có thể hữu ích để hình dung mạng và duyệt các cổng mở trên các máy chủ khác nhau.
+  GUI trông như thế này: https://www.w3schools.com/cybersecurity/img_zenmap.png
+
+@ CS Network Attacks
+- Có rất nhiều cuộc tấn công vào các giao thức và ứng dụng được lưu trữ trên Mạng. Ứng dụng Web được đề cập trong phần riêng của khóa học này.
+- Các dịch vụ có thể có lỗi cố hữu cho phép kẻ tấn công khai thác. Các cuộc tấn công này thường liên quan đến việc sử dụng các hướng dẫn đặc biệt cho Hệ điều hành, thông qua dịch vụ dễ bị tấn công, để kiểm soát quy trình vận hành dịch vụ mạng. Tràn bộ đệm là một loại tấn công như vậy.
+- Một mạng thường chứa nhiều ứng dụng, một số chứa thông tin đăng nhập đơn giản và một số khác có chức năng phức tạp. Một cách để có được cái nhìn tổng quan về bề mặt tấn công và cũng lập bản đồ các lỗ hổng dễ khai thác là quét cổng tất cả các tài sản trong môi trường mục tiêu, sau đó chụp ảnh màn hình.
+- Các công cụ như EyeWitness (https://github.com/FortyNorthSecurity/EyeWitness) thực hiện được điều này. Công cụ này cho phép chúng ta nhanh chóng có được cái nhìn tổng quan về những tài sản nào được thể hiện trên mạng, sau đó cung cấp ảnh chụp màn hình của từng dịch vụ. Bằng cách có ảnh chụp màn hình, chúng ta có thể dễ dàng xem xét và đánh giá nhanh chóng những hệ thống nào chúng ta nên xem xét kỹ hơn.
+- Khai thác một dịch vụ có nghĩa là lạm dụng dịch vụ theo cách mà nó không được mong muốn. Hoạt động khai thác này thường có nghĩa là kẻ tấn công có khả năng chạy mã của riêng chúng, được gọi là RCE (Remote Control Execution). 
+
+*  Buffer Overflow(tràn bộ đệm)  *
+Việc khai thác các dịch vụ mạng đôi khi liên quan đến việc lạm dụng các chức năng quản lý bộ nhớ của một ứng dụng. Quản lý bộ nhớ? Đúng vậy, các ứng dụng cần phải di chuyển dữ liệu trong bộ nhớ máy tính để ứng dụng hoạt động. Khi ngôn ngữ lập trình trao quyền kiểm soát bộ nhớ cho nhà phát triển, các vấn đề như tràn bộ đệm có thể tồn tại. Có nhiều lỗ hổng tương tự và trong phần này, chúng tôi sẽ xem xét tràn bộ đệm.
+Ngôn ngữ lập trình C và C++ cho phép các nhà phát triển kiểm soát rất nhiều cách quản lý bộ nhớ. Điều này lý tưởng cho các ứng dụng yêu cầu các nhà phát triển lập trình rất chặt chẽ với phần cứng, nhưng lại mở ra các lỗ hổng. Các ngôn ngữ lập trình như Java, JavaScript, C#, Ruby, Python và các ngôn ngữ khác không dễ dàng cho phép các nhà phát triển mắc phải những lỗi này, khiến lỗi tràn bộ đệm ít có khả năng xảy ra hơn trong các ứng dụng được viết bằng các ngôn ngữ này. 
+Tràn bộ đệm xảy ra khi dữ liệu đầu vào chưa được khử trùng được đưa vào các biến. Các biến này được biểu diễn trên Hệ điều hành thông qua một cấu trúc bộ nhớ gọi là Stack. Sau đó, kẻ tấn công có thể ghi đè lên một phần của stack gọi là Return Pointer.
+
+!Lưu ý !: Cấu trúc bộ nhớ ngăn xếp chỉ đơn giản là nơi chương trình lưu trữ các biến và thông tin cần thiết để chạy. Ngăn xếp sẽ nằm trong RAM của máy tính (Random Access Memory)
+- Con trỏ trả về quyết định CPU (Central Processing Unit) sẽ thực thi mã tiếp theo ở đâu. CPU chỉ đơn giản là kiểm soát những lệnh nào mà hệ thống sẽ thực hiện tại bất kỳ thời điểm nào. Con trỏ trả về chỉ đơn giản là một địa chỉ trong bộ nhớ nơi thực thi sẽ diễn ra. CPU phải luôn được thông báo nơi thực thi mã và đây là những gì con trỏ trả về cho phép CPU thực hiện. 
+- Khi kẻ tấn công có thể kiểm soát được Return Pointer, điều đó có nghĩa là kẻ tấn công có thể kiểm soát được lệnh nào mà CPU sẽ thực thi!
+ Ví dụ, hãy xem xét ví dụ mã C sau đây (đừng lo, bạn không cần phải là nhà phát triển C, nhưng hãy cố gắng hết sức để hiểu ứng dụng đơn giản này có chức năng gì):
+#include <string.h>
+void storeName (char *input) {
+  char name[12];
+  strcpy(name, input);
+}
+int main (int argc, char **argv) {
+  storeName(argv[1]);
+  return 0;
+}
+
+Giải thích: Trong nhiều ngôn ngữ lập trình, bao gồm C, ứng dụng bắt đầu trong một hàm gọi là main. Điều này được chỉ ra trong đoạn mã trên, nơi nó nói int main (int argc, char **argv) {. Bên trong dấu ngoặc nhọn { và }, chương trình chỉ chạy một hàm gọi là storeName(argv[1]);. Hàm này sẽ chỉ chấp nhận bất cứ thứ gì người dùng đã nhập vào chương trình và cung cấp cho hàm storeName.
+Ứng dụng có 11 dòng mã, nhưng hãy tập trung sự chú ý của bạn vào dòng có nội dung strcpy(name, input);. Đây là một hàm cố gắng sao chép văn bản từ đầu vào vào biến có tên là name. Name có thể chứa tối đa 12 ký tự như được chỉ ra bởi dòng có nội dung char name[12];. Có chỗ nào trong mã ngăn không cho tên được cung cấp dài hơn 12 ký tự không? Biến name do người dùng đang sử dụng ứng dụng cung cấp và được truyền trực tiếp vào hàm storeName. 
+Trong ứng dụng này không có quá trình dọn dẹp hay vệ sinh, đảm bảo độ dài của các đầu vào là những gì ứng dụng mong đợi. Bất kỳ ai chạy chương trình đều có thể dễ dàng nhập một giá trị lớn hơn giá trị mà biến name có thể chứa tối đa. Biến name chứa 12 ký tự, nhưng điều gì xảy ra khi CPU được yêu cầu ghi nhiều hơn 12 ký tự? Nó sẽ chỉ thực hiện những gì được yêu cầu, ghi đè lên nhiều bộ nhớ nhất có thể!
+Khi một giá trị lớn hơn giá trị mong đợi được cố gắng ghi, CPU vẫn sẽ cố gắng ghi giá trị này vào bộ nhớ. Điều này thực sự khiến CPU ghi đè lên những thứ khác trong bộ nhớ, ví dụ như Return Pointer cho phép kẻ tấn công kiểm soát CPU. Một lần nữa, nếu kẻ tấn công có thể ghi đè và kiểm soát Return Pointer, kẻ tấn công sẽ kiểm soát mã nào mà CPU nên thực thi.
+
+1 Ví dụ đồ họa cho thấy Alice viết tên mình vào ứng dụng mà chúng tôi đã sử dụng trong ví dụ trên: https://www.w3schools.com/cybersecurity/img_bufferoverflow.png
+1 Ví dụ cho Trường hợp 2: https://www.w3schools.com/cybersecurity/img_bufferoverflow-exploited.png
+Giải thích: Một ví dụ đồ họa cho thấy Alice viết tên mình vào ứng dụng mà chúng tôi đã sử dụng trong ví dụ trên:
+
+! Lưu ý ! : Nói một cách đơn giản, lỗi tràn bộ đệm cho phép kẻ tấn công kiểm soát CPU của nạn nhân bằng cách ghi đè cẩn thận lên bộ nhớ của nạn nhân. \
+
+*  Vulnerability Scanners  *
+- Trình quét lỗ hổng tìm kiếm các lỗ hổng phổ biến trong phần mềm và cấu hình trên toàn mạng một cách tự động. Nó không được thiết kế để tìm các lớp lỗ hổng mới, mà thay vào đó sử dụng danh sách các plugin (hoặc mô-đun) được xác định trước để quét các dịch vụ để tìm sự cố và lỗ hổng. Nó không nhất thiết phải săn lùng các lỗ hổng zero-day! Lỗ hổng zero-day là lỗ hổng hoàn toàn mới mà trước đây nhà cung cấp phần mềm và bên bảo vệ chưa biết đến; đối với lỗ hổng zero-day, hiện tại không có bản vá nào được biết đến cho vấn đề này. 
+- Máy quét có tính năng lập bản đồ mạng và quét cổng, bao gồm các cách khám phá và tìm ra lỗ hổng trong các ứng dụng khác nhau mà nó gặp phải.
+- Trình quét lỗ hổng thường hỗ trợ cấu hình bằng thông tin xác thực, cho phép đăng nhập vào hệ thống và đánh giá lỗ hổng thay vì tìm kiếm chúng từ góc nhìn chưa được xác thực.
+
+! Lưu ý !: Trình quét lỗ hổng chủ yếu tìm kiếm các lỗ hổng đã biết và cấu hình sai, chứ không phải lỗ hổng zero-day!
+Khái niệm: Lỗ hổng Zero-day (hay 0-day) là thuật ngữ để chỉ những lỗ hổng phần mềm hoặc phần cứng chưa được biết đến và chưa được khắc phục. Các hacker có thể tận dụng lỗ hổng này để tấn công xâm nhập vào hệ thống máy tính của doanh nghiệp, tổ chức để đánh cắp hoặc thay đổi dữ liệu.
+*  Code Execution  *
+- Khi kẻ tấn công tìm thấy lỗ hổng mà chúng có thể khai thác, chúng cần quyết định tải trọng nào chúng muốn chạy. 
+- Tải trọng là mã mà kẻ tấn công muốn phân phối thông qua khai thác.
++) Có nhiều tải trọng khác nhau mà kẻ tấn công có thể quyết định sử dụng, sau đây là một số ví dụ:
+# Khiến nạn nhân đăng ký với máy chủ C2 ("Command and Control") chấp nhận lệnh từ kẻ tấn công
+# Tạo một tài khoản người dùng cửa sau mới trên hệ thống để kẻ tấn công có thể sử dụng sau này
+# Mở GUI ("Giao diện người dùng đồ họa") với nạn nhân để kẻ tấn công có thể điều khiển từ xa
+# Nhận một thiết bị đầu cuối dòng lệnh, một shell, mà kẻ tấn công có thể gửi lệnh thông qua
+ !Một payload phổ biến của kẻ tấn công là bind-shell(vỏ ràng buộc). Nó khiến nạn nhân lắng nghe trên một cổng và khi kẻ tấn công kết nối, họ sẽ nhận được một shell.
+- Tường lửa hữu ích trong việc ngăn chặn kẻ tấn công kết nối với nạn nhân. Tường lửa sẽ từ chối hiệu quả các kết nối đến nạn nhân miễn là cổng không được phép. Chỉ có một ứng dụng có thể lắng nghe trên một cổng, vì vậy kẻ tấn công không thể lắng nghe trên các cổng đang được sử dụng trừ khi chúng vô hiệu hóa dịch vụ đó.
+- Để tránh biện pháp phòng thủ này, kẻ tấn công sẽ cố gắng khiến nạn nhân kết nối với kẻ tấn công, khiến nạn nhân cung cấp quyền truy cập vào payload. Thật không may, nhiều tường lửa không được cấu hình để từ chối lưu lượng truy cập ra, khiến cuộc tấn công này rất khả thi đối với kẻ tấn công.
+Trong ví dụ này, chúng ta thấy kẻ tấn công sử dụng reverse-shell(vỏ ngược) để khiến nạn nhân kết nối với kẻ tấn công: https://www.w3schools.com/cybersecurity/img_reverse-shell.svg
+
+! Lưu ý !: Thực thi mã có nghĩa là kẻ tấn công có thể chạy mã của chúng trên hệ thống nạn nhân. Mã nào chúng chọn triển khai là tùy thuộc vào chúng, nhưng thường liên quan đến việc kẻ tấn công có cách chạy lệnh trên hệ thống nạn nhân trong thời gian dài. 
+
+*  Network Monitoring  *
+- Kẻ tấn công cần mạng trong hầu hết các trường hợp để điều khiển mục tiêu từ xa. Khi kẻ tấn công có khả năng điều khiển mục tiêu từ xa, điều này được thực hiện thông qua kênh Chỉ huy và Kiểm soát, thường được gọi là C&C hoặc C2.
+- Có những sự xâm phạm thông qua phần mềm độc hại được lập trình sẵn với các tải trọng không cần C2. Loại phần mềm độc hại này có khả năng xâm phạm ngay cả các mạng không có kết nối mạng.
++) Phát hiện sự thỏa hiệp thường có thể được thực hiện thông qua việc tìm kênh C2. C2 có thể có bất kỳ hình thức nào, ví dụ:
+ #Sử dụng HTTPS để giao tiếp với máy chủ của kẻ tấn công. Điều này làm cho C2 trông giống như đang duyệt mạng
+ # Sử dụng mạng xã hội để đăng và đọc tin nhắn tự động
+ # Các hệ thống như Google Docs để thêm và chỉnh sửa lệnh cho nạn nhân
++) Chỉ có sự khéo léo của kẻ tấn công mới đặt ra giới hạn cho C2. Khi cân nhắc cách ngăn chặn kẻ tấn công bằng các kênh C2 thông minh, chúng ta thường phải dựa vào việc phát hiện các bất thường về mặt thống kê và sự khác biệt trên mạng. Ví dụ, các công cụ giám sát mạng có thể phát hiện:
+# Kết nối dài được sử dụng bởi C2, nhưng điều này không tự nhiên đối với giao thức đang đề cập. HTTP là một trong những giao thức mà việc có kết nối dài không phổ biến lắm, nhưng kẻ tấn công sử dụng nó để điều khiển từ xa có thể. 
+# Beacons được C2 sử dụng để chỉ ra nạn nhân còn sống và sẵn sàng nhận lệnh. Beacons được nhiều loại phần mềm sử dụng, không chỉ kẻ tấn công, nhưng biết được beacon nào tồn tại và beacon nào bạn mong đợi là một cách làm tốt. 
+# Các luồng dữ liệu đột nhiên bùng nổ từ mạng. Điều này có thể chỉ ra một lượng lớn dữ liệu tải lên từ một ứng dụng hoặc kẻ tấn công đánh cắp dữ liệu. Hãy cố gắng hiểu ứng dụng và người dùng nào đang gây ra các luồng dữ liệu và áp dụng ngữ cảnh cho nó. Nó có bình thường hay không? 
+- Có nhiều cách mà người bảo vệ có thể thử tìm ra các bất thường. Những bất thường này cần được liên hệ thêm với dữ liệu từ hệ thống nguồn gửi dữ liệu.
+- Đối với giám sát mạng, ngữ cảnh nên được áp dụng để giúp xác định nhiễu từ tín hiệu. Điều đó có nghĩa là SOC (Security Operations Center) nên cố gắng làm giàu dữ liệu, ví dụ như Địa chỉ IP nguồn và đích với ngữ cảnh để giúp làm cho dữ liệu có giá trị hơn.
+-  Áp dụng ngữ cảnh có thể được mô tả bằng kịch bản sau: Một cuộc tấn công đến từ Internet nhưng nó cố gắng khai thác lỗ hổng Linux đối với dịch vụ Windows. Điều này thường được coi là nhiễu và có thể bỏ qua một cách an toàn; trừ khi, nếu địa chỉ IP thực hiện cuộc tấn công là địa chỉ IP từ mạng của riêng bạn hoặc nhà cung cấp mà bạn tin tưởng thì sao? Ngữ cảnh mà chúng ta có thể áp dụng sau đó có thể cung cấp cái nhìn sâu sắc có giá trị để chúng ta khám phá thêm về cuộc tấn công. Rốt cuộc, chúng ta không muốn các hệ thống mà chúng ta tin tưởng phát động bất kỳ cuộc tấn công nào.
+
+*  Peer to Peer Traffic(Giao thông ngang hàng)  *
+- Hầu hết các mạng được cấu hình theo kiểu máy khách đến máy chủ. Máy khách truy cập máy chủ để lấy thông tin và khi máy khách cần tương tác với nhau, chúng thường thực hiện thông qua máy chủ.
+- Tuy nhiên, kẻ tấn công có thể muốn sử dụng phương thức giao tiếp ngang hàng, tức là giữa máy khách với máy khách, để đạt được những mục tiêu dễ dàng như sử dụng lại thông tin đăng nhập hoặc khai thác các máy khách yếu hoặc dễ bị tấn công.
+- Ví dụ, cổng 445, được SMB sử dụng, là một chỉ báo tốt để phát hiện sự xâm phạm. Các máy khách không nên nói chuyện với nhau qua SMB trong hầu hết các môi trường, tuy nhiên trong quá trình xâm phạm, có khả năng kẻ tấn công sẽ cố gắng sử dụng SMB để xâm phạm thêm các hệ thống.
+Link ảnh minh họa: https://www.w3schools.com/cybersecurity/img_peer-to-peer.svg
+
+*  Lateral Movement And Pivoting(chuyển động ngang và  xoay)  *
+-Khi một hệ thống bị xâm phạm, kẻ tấn công có thể lợi dụng hệ thống đó để khám phá các mạng bổ sung mà hệ thống bị xâm phạm có quyền truy cập. Điều này có thể thực hiện được trong môi trường mà hệ thống bị xâm phạm có nhiều đặc quyền hơn thông qua tường lửa hoặc hệ thống có quyền truy cập vào các mạng khác thông qua ví dụ như một card mạng bổ sung.
++) Pivoting có nghĩa là kẻ tấn công sử dụng máy chủ bị xâm phạm để tiếp cận các mạng khác. Một minh họa về điều này được hiển thị ở đây, trong đó Eve đã xâm phạm một hệ thống và đang sử dụng nó để quét và khám phá các hệ thống khác:
+Link Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_pivoting-lateral-movement.svg
++) Chuyển động ngang là hành động tận dụng trục xoay và khai thác hệ thống khác bằng trục xoay. Hệ thống mới này giờ đây có thể được sử dụng thêm để thực hiện chuyển động ngang và nhiều chuyển động ngang hơn. Eve trong ví dụ này sử dụng Máy chủ X để khám phá thêm Hệ thống B.
+Link Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_pivoting-lateral-movement2.svg
+
+@ CS Web Application Attacks
+*  IDOR(Insecure Direct Object Reference)(tham chiếu đối tượng trực tiếp không an toàn)  *
+- Lỗ hổng IDOR xảy ra khi nhà phát triển chưa triển khai các yêu cầu cấp phép để truy cập tài nguyên.
+Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_idor.svg
+- Eve, chỉ cần thay đổi một mã định danh, ví dụ tham số Rest của tài liệu, cô ấy có thể truy cập vào tài liệu của Alice.
+- Điều này xảy ra khi ứng dụng web không thực thi quyền hạn giữa các đối tượng, cho phép kẻ tấn công liệt kê các giá trị và kiểm tra quyền truy cập vào các điểm dữ liệu khác.
++) Ví dụ, chúng ta có thể giải mã sau đây không hiển thị dấu hiện ủy quyền:
+        $id = getInputFromUser();
+         $doc = getDocument($id);
+         return $doc;
+
+Giải thích: Đoạn mã trên yêu cầu người dùng nhập dữ liệu, không thực hiện xác thực hoặc vệ sinh, sau đó thực hiện tra cứu trực tiếp bằng hàm getDocument và trả về tài liệu cần tìm.
++) Ví dụ khác về triển khai tốt hơn sẽ là kiểm tra các đặc quyền:
+          $id = getInputFromUser();
+          $user = findUsername();
+          $doc = "";
+           if (hasAccessToDocument($user, $id)) {
+           $doc = getDocument($id);
+           } else {
+           $doc = "Not authorized for this document";
+           } 
+           return $doc;
+
+Giải thích: Các lỗ hổng như thế này rất dễ tìm vì bạn chỉ cần thay đổi một số đơn giản và xem liệu bạn có thể truy cập vào dữ liệu của người khác hay không. Kiểm tra xem người dùng có được ủy quyền trước hay không sẽ ngăn chặn được lỗ hổng này. 
+
+! Lưu ý ! : Mã giả chỉ đơn giản là mã giống với mã thật nhưng có thể không hoạt động thực sự. Nó được dùng để tạo ví dụ cho mã thực tế.
+
+*  Avoiding "Magic Numbers"(Tránh những con số kì diệu)  *
+- Một ứng dụng muốn tránh sử dụng chuỗi số khi tham chiếu dữ liệu. Trong ví dụ IDOR, các tài liệu có mã định danh từ 1000 đến 1002. Đôi khi những con số này được gọi là "Số ma thuật" vì chúng trực tiếp trỏ đến một tài nguyên trên máy chủ, ví dụ thông qua cơ sở dữ liệu và tất cả các giá trị có thể dễ dàng được liệt kê. Ví dụ, kẻ tấn công có thể kiểm tra tất cả các mã định danh tài liệu từ 0 đến 10000 và ghi lại bất kỳ kết quả nào cung cấp quyền truy cập vào dữ liệu.
+- Trong khi việc ủy ​​quyền nên được triển khai đúng cách, việc sử dụng GUID ("Globally Unique Identifier") hoặc UUID ("Universally Unique Identifier") khi tham chiếu dữ liệu cũng rất hữu ích. Các mã định danh này được thiết kế để duy nhất trên toàn cầu và không thể liệt kê được do entropy tích hợp của quá trình tạo số.
+  GUID có thể trông như thế này:  3377d5a6-236e-4d68-be9c-e91b22afd216
+
+! Lưu ý !: Nếu bạn xem xét toán học đằng sau việc đoán số ở trên, chúng ta sẽ nhanh chóng thấy rằng việc liệt kê không hề dễ dàng. Liệt kê là một kỹ thuật có thể được sử dụng để duyệt qua tất cả các tùy chọn có thể có của một giá trị, GUID hoặc UUID ngăn chặn điều này. 
+
+*  SQL Injection  *
+- Nhiều ứng dụng web được kết nối với cơ sở dữ liệu. Cơ sở dữ liệu lưu trữ tất cả thông tin mà ứng dụng web muốn lưu trữ và sử dụng.
+- SQL Injection là một kỹ thuật cho phép kẻ tấn công thao túng SQL (Structured Query(truy vấn) Language) mà nhà phát triển ứng dụng web 
+đang sử dụng. Điều này thường xảy ra do thiếu sự khử trùng dữ liệu. SQL được các nhà phát triển sử dụng thường xuyên để truy cập tài nguyên cơ sở dữ liệu. 
+Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_sqlinjection.svg
+
+Giải thích: Trong yêu cầu Eve đưa ra trong đồ họa ở trên, chúng ta thấy cô ấy nhập giá trị: 1000' HOẶC '1'='1 Điều này khiến cho SQL Query kết quả trả về tất cả các hàng của bảng vì cơ sở dữ liệu đánh giá câu lệnh luôn đúng. Hãy nghĩ về điều này: cơ sở dữ liệu nhận được một yêu cầu trong đó giá trị có thể là 1000 HOẶC 1 bằng 1; nó sẽ trả về một giá trị mỗi lần! Có nhiều hàm và hoạt động SQL khác nhau mà chúng ta có thể sử dụng để thao tác cú pháp và ví dụ này chỉ là một trong rất nhiều ví dụ.
++) Dưới đây là một ví dụ mã giả có chứa lỗ hổng SQL Injection:
+       $username = getUserName();
+       $pw = getPassword();
+       $user = mysql_query("SELECT * FROM userTable WHERE username = $username AND password = $pw");
+       if ($user) {
+       $loggedIn = True;
+       } else {
+       $loggedIn = False;
+       }
+
+Giải thích: Chúng ta có thể thấy không có sự khử trùng nào trên cả biến tên người dùng và mật khẩu; thay vào đó, chúng được sử dụng trực tiếp trong SQL khiến lỗ hổng xảy ra. Mã cho phép biến $loggedIn được đặt nếu truy vấn trả về bất kỳ thứ gì.
++) Để kẻ tấn công khai thác lỗ hổng này, chúng có thể chỉ cần tạo một URL tới tên miền mục tiêu có nội dung tấn công như sau:
+        /login?username=admin&password=password' OR '1'='1
++) Biến mật khẩu được thiết lập để chứa các ký tự SQL, khiến chuỗi SQL kết quả trả về một hàng, ngay cả khi chúng ta không biết mật khẩu. Truy vấn SQL kết quả sẽ là:
+         SELECT * FROM userTable WHERE username = 'admin' AND password = 'password' OR '1'='1'
++) Truy vấn tham số hóa là giải pháp được khuyến nghị để đánh bại SQL Injection. Trong truy vấn tham số hóa, các nhà phát triển cẩn thận đảm bảo mỗi đầu vào cho truy vấn được xác định là một giá trị và loại cụ thể. Sau đây là một ví dụ từ mã trên được coi là một triển khai an toàn: 
+$username = getUserName();
+$pw = getPassword();
+$parameterizedQuery = prepare_query("SELECT * FROM userTable where username = ? and password = ?");
+$parameterizedQuery.setString(1, $username)
+$parameterizedQuery.setString(2, $password)
+$user = parameterizedQuery.execute();
+if ($user) {
+    $loggedIn = True;
+} else {
+    $loggedIn = False;
+}
+Giải thích: Trong ví dụ trên, nhà phát triển đã cẩn thận nói rằng tham số 1 phải là một chuỗi và chứa tên người dùng, còn mật khẩu trong tham số thứ hai.
+
+! Lưu ý !: SQL Injection có thể xảy ra do các nhà phát triển không kiểm tra cẩn thận dữ liệu đầu vào từ người dùng và do đó cho phép kẻ tấn công đánh lừa ứng dụng và cơ sở dữ liệu chạy mã SQL trái phép.
+
+*  XSS(Cross-Site Scripting)(kịch bản chéo trang)  *
+- XSS sử dụng máy chủ để tấn công người truy cập máy chủ. Cuộc tấn công không nhắm vào chính máy chủ mà nhắm vào người dùng.
+- Máy chủ chỉ được sử dụng để phản ánh các giá trị của kẻ tấn công, thường là JavaScript, đối với những người truy cập sau đó chạy dữ liệu của kẻ tấn công trong trình duyệt của họ. Kẻ tấn công phải tạo một đầu vào mà máy chủ không dọn dẹp và khử trùng, theo cách đó khi khách truy cập nhấp vào liên kết chứa các giá trị của kẻ tấn công hoặc truy cập tài nguyên trên trang web mà kẻ tấn công đã sử dụng trong cuộc tấn công của họ, người dùng sẽ chạy mã mà kẻ tấn công cung cấp.
+ Sau đây là ví dụ đồ họa về việc Eve gửi liên kết tới Alice có chứa cuộc tấn công XSS: https://www.w3schools.com/cybersecurity/img_xss.svg
+
+Giải thích: Cuộc tấn công này được gọi là Reflected XSS và bao gồm việc Eve tìm ra lỗ hổng, sau đó gửi một liên kết chứa cuộc tấn công đến một người dùng không nghi ngờ và yêu cầu họ nhấp vào liên kết. Liên kết chứa cuộc tấn công và khiến máy chủ web trả về cuộc tấn công cho nạn nhân nhấp vào liên kết.
++) Mã đằng sau điều này có thể đơn giản như ví dụ mã giả sau:
+       $nickname = etNickName();
+       echo "Greeting $nickname, nice to meet you!";
+- Một loại XSS khác được gọi là tấn công Stored XSS. Trong các cuộc tấn công Stored XSS, kẻ tấn công có khả năng lưu nội dung trên trang web được phản ánh mỗi khi ai đó truy cập trang web. Nó không nhất thiết yêu cầu ai đó phải nhấp vào liên kết.
++) Đồ họa này mô tả cách Eve có thể lưu trữ JavaScript độc hại để thực thi trong trình duyệt của bất kỳ ai khi họ truy cập tài nguyên:
+Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_stored-xss.svg
+- Các cuộc tấn công XSS có thể thực hiện được nhiều việc, ví dụ:
+# Đánh cắp cookie có thể được sử dụng để xác thực
+# Làm hỏng trang web, hiển thị nội dung mà máy chủ web không có ý định
+#Lừa đảo người dùng bằng cách để lại thông tin đăng nhập trong các biểu mẫu đăng nhập giả mạo
+- Để phòng chống XSS, có một số biện pháp tốt nhất cần tuân theo:
+# Cho phép máy chủ web trả về tiêu đề CSP (Content Security Policy) quyết định nghiêm ngặt nơi và cách JavaScript được thực thi từ
+# Mã hóa an toàn đầu ra mà máy chủ web trả về cho người dùng, chuyển đổi hiệu quả các ký tự HTML thành các ký tự an toàn được mã hóa
+
+*  HTML Encoding  *
+- Mã hóa HTML cho phép ứng dụng web trả về các ký tự không an toàn theo cách an toàn. 
+ Ví dụ, các ký tự đặc biệt sau đây có thể được mã hóa thành các ký tự tương ứng:
+Special Character	                   HTML Entity(thực thể)
+<	                                                   &lt;
+>	                                                   &gt;
+"	                                                   &quot;
+&	                                                   &amp;
+'	                                                   &apos;
+==> Điều này tạo ra đầu ra có thể được hiển thị một cách an toàn. Sau đó, chúng ta có thể sử dụng JavaScript ở phía máy khách để chuyển các thực thể HTML thành giá trị một cách an toàn.
+
+*  CSP(Content Security Policy)  *
+- Máy chủ web có thể kiểm soát loại JavaScript nào được phép chạy trên trang web. Điều này không loại bỏ lỗ hổng nhưng tăng cường khả năng phòng thủ sâu khi có lỗ hổng chưa xác định.
+- Một CSP phổ biến và nghiêm ngặt là cung cấp cho người dùng ứng dụng web danh sách tất cả các tệp nguồn JavaScript được chấp nhận.
+- Ngoài ra, CSP thường ngăn chặn việc thực thi JavaScript nội tuyến.
+- Để cho phép triển khai và phát hiện các cuộc tấn công đang diễn ra dễ dàng hơn, CSP cho phép khách hàng báo cáo các vi phạm CSP tới một URL do máy chủ cung cấp
+
+*  Web-Application Scanning  *
+- Có nhiều trình quét ứng dụng web. Chúng cho phép quét các ứng dụng để tìm lỗ hổng như SQL Injection và XSS. Trái ngược với trình quét lỗ hổng mạng, trình quét ứng dụng web thường được xây dựng dựa trên phương pháp tìm kiếm thay vì chữ ký và danh sách các lỗ hổng đã biết.
+Trình quét ứng dụng web rất hữu ích, đặc biệt khi được tích hợp vào các quy trình phát triển như CI ("Continuous Integration)(Tích hợp liên tục) và CD (Continuous Delivery)(phân phối liên tục).
+
+@ CS Wi-Fi Attacks
+*  Wi-fi Basics  *
+WIFI như hầu hết mọi người biết bắt nguồn từ giao thức IEEE 802.11. Có những giao thức khác cũng sử dụng radio để truyền tín hiệu, ví dụ:
+# Bluetooth, để giao tiếp với các thiết bị chúng ta mang theo, thường là điện thoại thông minh, tai nghe, v.v.
+# NFC (Near Field Communications)(giao diện tầm gần), được tích hợp trong thẻ ra vào và thẻ tín dụng để truyền dữ liệu không dây.
+# RFID (Radio Frequency Identification)(nhận dạng tầng số vô tuyến), được sử dụng cho thẻ ra vào và các thiết bị khác, ví dụ như ô tô có thể truyền dữ liệu nhận dạng không dây đến hệ thống thu phí đường bộ.
+# ZigBee và Z-Wave được sử dụng cho hệ thống tự động hóa doanh nghiệp và gia đình.
+- Giao tiếp không dây thường được thực hiện thông qua AP(Access Point)(Điểm truy cập), một trạm gốc không dây hoạt động như một bộ chuyển mạch và bộ định tuyến giữa các máy khách muốn giao tiếp. Giao tiếp ngang hàng cũng khả thi, nhưng ít phổ biến hơn.
+- Tên của mạng không dây được gọi là SSID ("Service Set Identifier").
+- Vì tín hiệu WIFI có thể đến được mọi người trong vùng lân cận nên kẻ tấn công có thể dễ dàng sử dụng ăng-ten để "ngửi" thông tin liên lạc của bất kỳ ai đang truyền. Ngửi đơn giản có nghĩa là lắng nghe các gói tin mà giao diện mạng có thể nhìn thấy.
+- WIFI đôi khi cho phép người dùng truy cập vào các ứng dụng nội bộ, làm tăng khả năng tấn công. Hơn nữa, các thiết bị WIFI có giao diện quản lý và chương trình cơ sở có thể chứa lỗ hổng, đôi khi không phải lúc nào cũng được vá kịp thời như các tài sản khác trong doanh nghiệp.
+
+*  Wi-Fi Security  *
+- Wi-Fi có những tùy chọn:
+# Không bảo mật
+# Danh sách truy cập dựa trên địa chỉ MAC
+# PSK(Pre-shared key)(Khóa chia sẻ trước)
+# Xác thực doanh nghiệp
+- Nhiều cuộc tấn công WIFI dựa vào các card mạng có hai tính năng chính, cụ thể là:
+# Chế độ giám sát: Khiến card mạng chuyển tiếp các gói tin có đích đến là tất cả các địa chỉ MAC đến Hệ điều hành, không chỉ riêng địa chỉ MAC của card mạng.
+# Tiêm gói tin: Card mạng hỗ trợ tạo các gói tin có địa chỉ MAC nguồn khác với địa chỉ MAC của chính nó.
+
+*  Open Wi-Fi Networks(Mạng Wi-Fi mở)  *
+- Mạng WIFI mở là mạng không có mật khẩu. Giao tiếp giữa AP và Máy khách không được mã hóa và mọi người phải dựa vào nguồn mã hóa của riêng mình để bảo vệ lưu lượng truy cập của họ. Những loại mạng này rất tiện lợi và dễ truy cập đối với người dùng, nhưng lại gây ra sự thỏa hiệp về bảo mật.
+- Kẻ tấn công trên các loại mạng này có thể dễ dàng biết được mọi người đang làm gì chỉ bằng cách đánh hơi các gói tin. Các gói tin như vậy có thể chứa các chi tiết nhạy cảm hoặc chỉ đơn giản là các chi tiết về những gì người dùng đang làm trên mạng.
+ Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_wifi-open.svg
+
+*  Hidden SSID  *
+- AP thường có thể tắt chức năng phát tên mạng không dây. Điều này yêu cầu khách hàng phải chứng minh kiến ​​thức về SSID để tham gia mạng. Không được coi là biện pháp tốt nhất khi bật SSID ẩn, vì tên mạng sẽ bị lộ bất cứ khi nào khách hàng tham gia. Hơn nữa, giờ đây khách hàng cần phải hỏi và phát thông tin về mạng mà họ muốn tham gia, ở mọi nơi họ đi. Sau đó, kẻ tấn công có thể đánh hơi lưu lượng WIFI của khách hàng và có khả năng tìm hiểu thêm thông tin về khách hàng là ai và họ đã tham gia mạng ở đâu trước đó.
+Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_wifi-hidden-ssid.svg
+
+*  MAC Address Filtering  *
+- Một số AP hỗ trợ kiểm soát truy cập dựa trên Địa chỉ MAC. AP có thể tạo danh sách cho phép những địa chỉ MAC nào được phép tham gia và giao tiếp trên mạng.
+- Cách tiếp cận này không an toàn. Kẻ tấn công có thể đánh hơi và quan sát các hệ thống khác đang giao tiếp trên mạng. Sau đó ghi lại địa chỉ MAC của chúng và cập nhật địa chỉ MAC của kẻ tấn công thành địa chỉ đã được phép. Điều này thực sự bỏ qua yêu cầu Lọc địa chỉ MAC.
+
+*  PSK(Pre-Shared Key)(Khóa chia sẻ trước)
+- PSK chỉ đơn giản có nghĩa là mạng được cấu hình bằng mật khẩu. Bảo vệ PSK thường được triển khai thông qua giao thức có tên là WPA ("WIFI Protected Access"). Các giao thức xác thực cũ hơn cũng có thể được sử dụng, ví dụ như WEP ("Wired Equivalent Privacy") nhưng trong một thời gian dài đã bị coi là lỗi thời vì nó rất không an toàn và dễ bị kẻ tấn công bẻ khóa.
+- WPA có nhiều dạng khác nhau, trong đó WPA3 là chuẩn mới nhất tính đến năm 2021. WPA cũng không hoàn toàn an toàn trước những kẻ tấn công, nhưng cung cấp khả năng bảo vệ tốt hơn nhiều so với WEP. Để đột nhập vào mạng hỗ trợ WPA, kẻ tấn công phải cố gắng bẻ khóa mật khẩu bằng một trình bẻ khóa mật khẩu. Đây được coi là một quá trình tốn kém về mặt thời gian nếu mật khẩu đủ mạnh.
+!Nếu kẻ tấn công có thể quan sát (ngửi) bất kỳ ai xác thực vào mạng, chúng có đủ khả năng để tham gia vào các hoạt động bẻ khóa mật khẩu. Các công cụ như aircrack-ng ("https://www.aircrack-ng.org/") hỗ trợ bẻ khóa mật khẩu WIFI.
+ Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_wifi-psk.svg
+
+*  Enterprise Authentication(Xác thực doanh nghiệp) *
+- Điểm truy cập doanh nghiệp cũng có thể hỗ trợ xác thực khách hàng dựa trên chứng chỉ, yêu cầu PKI (Public Key Infrastructure) hoặc thông tin xác thực doanh nghiệp bằng cách tích hợp với dịch vụ xác thực tập trung.
+- Điều này có một số lợi ích, đặc biệt là khái niệm quản lý khóa. Với mạng PSK, thách thức cố hữu là cách phân phối, luân chuyển và thu hồi mật khẩu.
+- Trong khi Xác thực doanh nghiệp cung cấp khả năng quản lý bảo mật tốt hơn liên quan đến khóa, nó cũng liên quan đến cơ sở hạ tầng phức tạp hơn và tạo ra nhiều cơ hội khác cho kẻ tấn công.
+
+
+*  Fake Wi-Fi Access Points  *
+- Kẻ tấn công có thể dễ dàng bắt đầu phát sóng mạng giả mạo là mạng khác. Thường thì máy khách sẽ tự động kết nối với mạng trong phạm vi nếu chúng tự giới thiệu với SSID phù hợp. Điều này cho phép kẻ tấn công khiến máy khách kết nối với mạng của kẻ tấn công, cho phép chúng đánh hơi và thay đổi lưu lượng theo ý muốn của kẻ tấn công.
+Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_wifi-fake-ap.svg
+
+@ CS Passwords
+- Phần này sẽ khám phá các cuộc tấn công và phòng thủ liên quan đến mật khẩu.
+*  Password Strength(Độ mạnh của mật khẩu)  *
+ Yếu tố nào quyết định mật khẩu mạnh? Có phải mật khẩu phức tạp không? Có bao nhiêu ký tự? Số lượng ký tự đặc biệt?
+Tác giả truyện tranh nổi tiếng xkcd.com đã chỉ ra một cách xuất sắc cách mật khẩu có thể bị tấn công trong truyện tranh bên dưới. Hãy xem lại trong giây lát và chúng ta hãy thảo luận thêm.
+
+! Lưu ý!: Entropy(hỗn loạn) có nghĩa là không thể dự đoán được. Entropy càng cao thì càng khó bẻ khóa bằng các phương tiện chuẩn.
+Truyện minh họa về mật khẩu: https://xkcd.com/936/
+
+Giải thích: Nếu chúng ta xem xét mật khẩu đầu tiên Tr0ub4dor&3 , mật khẩu này sẽ phù hợp với hầu hết các quy tắc chính sách mật khẩu, ví dụ như có chữ cái viết hoa, số, ký tự đặc biệt và độ dài 11 ký tự. Tuy nhiên, mật khẩu này có một số vấn đề, đó là:
+# Khó nhớ. Bạn đã thay thế ký tự o đầu tiên (chữ cái) bằng số 0 (số) hay là ký tự thứ hai? Bạn đã thay thế ký tự a bằng số 4 hay chưa?
+# Khó gõ. Bạn phải gõ các chữ cái, số và ký tự đặc biệt khác nhau theo thứ tự đặc biệt. Có lẽ đây không phải là từ nhanh nhất được gõ trên bàn phím của bạn.
+# Không mạnh lắm! Mật khẩu dựa trên một từ khá phổ biến và không có nhiều sức mạnh, chỉ khoảng 28 bit entropy.
+Thay vì chọn những mật khẩu có những yếu tố tiêu cực này, chúng ta có thể tăng đáng kể entropy của mật khẩu theo những cách đơn giản. Nếu chúng ta xem xét mật khẩu CorrectHorseBatteryStaple, chúng ta sẽ thấy sự cải thiện đáng kể của mật khẩu:
+# Mật khẩu dễ gõ. Việc gõ các từ thông thường là hoạt động hàng ngày của nhiều người và bạn có thể thực hiện rất nhanh.
+# Dễ nhớ. Bằng cách sử dụng hình ảnh trực quan về mật khẩu, một con ngựa, một cục pin, một chiếc ghim bấm và từ chính xác, chúng ta có thể nhớ dễ dàng hơn nhiều.
+# Nó mạnh hơn đáng kể so với hầu hết các hoạt động bẻ khóa mật khẩu! Nó cung cấp khoảng 44 bit entropy, khiến nó thực sự khó bị bẻ khóa.
+#Mật khẩu như thế này được gọi là cụm mật khẩu và thường là cách thực hành tốt hơn nhiều so với một từ đơn giản có một số phức tạp. Hãy xem xét cách bạn có thể cải thiện mật khẩu để mạnh hơn nữa và phù hợp với các quy tắc chính sách mật khẩu như ký tự đặc biệt và chữ in hoa! Bạn thậm chí có thể sử dụng khoảng trắng trong mật khẩu, khiến cụm mật khẩu trở nên tự nhiên hơn khi nhập.
+
+*  Password Managers(Quản lí mật khẩu)  *
+- Viết mật khẩu của bạn ra trong nhiều năm đã được coi là một hành vi xấu, nhưng liệu có thực sự như vậy không? Sử dụng cùng một mật khẩu trên nhiều dịch vụ trực tuyến có rủi ro đáng kể, nếu một trong những nền tảng đó bị hack thì sao? Sau đó, mật khẩu đó bị xâm phạm và kẻ tấn công có thể sử dụng lại mật khẩu trên tất cả các dịch vụ khác mà mật khẩu đó được sử dụng.
+Để giải quyết vấn đề này, khuyến nghị là không sử dụng lại cùng một mật khẩu trên nhiều dịch vụ. Điều này thực sự gây khó khăn cho người dùng vì họ không chỉ được yêu cầu sử dụng mật khẩu duy nhất mà còn phải tạo mật khẩu mạnh và an toàn! Trình quản lý mật khẩu giúp giải quyết vấn đề này bằng cách cung cấp cho người dùng cách ghi lại mật khẩu trong tệp, cơ sở dữ liệu hoặc hệ thống khác theo cách an toàn nhất có thể, giúp mật khẩu dễ truy cập và đảm bảo chúng mạnh và duy nhất trên các dịch vụ khác nhau.
+Khi được triển khai đúng cách, trình quản lý mật khẩu sẽ:
+# Làm cho việc sử dụng Internet trở thành một hoạt động an toàn hơn nhiều
+# Tăng năng suất vì mật khẩu cho các dịch vụ khác nhau có thể dễ dàng được tìm thấy, sao chép và dán vào các dịch vụ tương ứng mà người dùng muốn đăng nhập
+# Cung cấp cách dễ dàng để đặt lại và tạo lại mật khẩu mới khi cần.
+# Viết mật khẩu được coi là rủi ro thấp hơn nhiều đối với người dùng của chúng tôi so với việc họ sử dụng lại mật khẩu. Đúng, đây không phải là giải pháp hoàn hảo vì trình quản lý mật khẩu có khả năng bị xâm phạm, tuy nhiên, đây được coi là cách tiếp cận an toàn hơn nhiều.
+
+*  Passwordless Solutions(Giải pháp không cần mật khẩu)  *
+- Nếu bản thân mật khẩu có thể bị chấm dứt thì sao? Luôn có người không thể nhập mật khẩu dài hơn làm mật khẩu của họ mỗi ngày. Có thể có một số lý do cho điều này, ví dụ:
+# Những người làm việc không rành về CNTT trong văn phòng
+# Một bác sĩ đến thăm nhiều máy tính khác nhau trong bệnh viện mỗi ngày khi thăm nhiều bệnh nhân khác nhau ở nhiều phòng khác nhau
+# Thật khó để nhập mật khẩu vào hệ thống, điều này đòi hỏi phải có
+Việc phát triển và triển khai các hệ thống không yêu cầu người dùng cung cấp mật khẩu đang phát triển nhanh chóng. Thay vì yêu cầu người dùng xác thực bằng mật khẩu, chúng ta sẽ làm gì nếu chúng ta cho phép họ sử dụng ví dụ:
+# Một cái gì đó họ là, ví dụ như khuôn mặt hoặc dấu vân tay của họ
+# Một thứ gì đó họ có, ví dụ như một vật tượng trưng hoặc điện thoại di động của họ
+Có những thách thức đối với điều này, nhưng về mặt bảo mật, chúng ta có thực sự làm cho vấn đề trở nên tồi tệ hơn hay tốt hơn cho người dùng của mình không? Chúng ta phải nhớ rằng chúng ta không tìm cách triển khai các hệ thống bảo mật hoàn hảo, chúng thường nằm ngoài tầm với và không thể triển khai được, vì vậy thay vào đó, chúng ta phải cân nhắc cẩn thận về cách chúng ta có thể hạn chế các mối đe dọa và đồng thời giúp cuộc sống của người dùng dễ dàng hơn. Mật khẩu không hoàn hảo và các giải pháp không cần mật khẩu cũng vậy. Bạn sẽ triển khai giải pháp nào cho người dùng của mình?
+
+*  Multi-Factor Authentication(Xác thực đa yếu tố)  *
+- Khi chúng ta biết rằng bất kể sử dụng giải pháp nào để xác minh người dùng, vẫn sẽ có những rủi ro đáng kể liên quan đến tài khoản của họ, các giải pháp khác có thể được triển khai để giúp giảm thiểu rủi ro.
+- Xác thực đa yếu tố cho phép các giải pháp không chỉ xác minh người dùng dựa trên mật khẩu của họ mà đồng thời yêu cầu người dùng xuất trình yếu tố thứ hai để chứng minh họ là ai.
+Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_multi-factor-authentication.png
+ Có thể có nhiều cách khác nhau để yêu cầu yếu tố thứ hai. Sau đây là một vài ví dụ:
+# Sử dụng ứng dụng xác thực trên điện thoại thông minh để cung cấp mã bí mật
+# Nhận mã bí mật qua SMS (Short Message Service) trên điện thoại
+# Sử dụng mã thông báo phần cứng để cung cấp mã bí mật
+# Xuất trình dấu vân tay hoặc khuôn mặt để nhận dạng cá nhân
+- Tất cả những điều trên không chỉ yêu cầu phải biết mật khẩu mà còn yêu cầu cung cấp thêm một mục thứ hai (một yếu tố).
+- Các giải pháp như thế này đôi khi được coi là rất xâm phạm đối với người dùng. Để giúp giải quyết vấn đề này, có thể áp dụng khái niệm DAC ("Kiểm soát truy cập tùy ý"). DAC cho phép giải pháp đăng nhập xem xét có nên thách thức người dùng bằng mã đa yếu tố hay không. Ví dụ, đa yếu tố chỉ có thể cần thiết khi người dùng:
+# Đăng nhập từ một vị trí mới
+# Sử dụng trình duyệt hoặc phần mềm khác để truy cập ứng dụng
+# Cố gắng thực hiện một hành động nhạy cảm trong ứng dụng, ví dụ như thay đổi mật khẩu hoặc thực hiện giao dịch tiền vượt quá ngưỡng nhất định
+
+*  Password Guessing(Đoán mật khẩu)  *
+- Khi kẻ tấn công gặp phải các ứng dụng và dịch vụ, có thể có cơ hội để đoán mật khẩu. Đoán mật khẩu là một hoạt động liên quan đến việc kẻ tấn công tương tác với ứng dụng qua mạng, thử danh sách các tổ hợp tên người dùng và mật khẩu khác nhau.
+- Tính năng Đoán mật khẩu giúp kẻ tấn công có cơ hội tìm ra những tài khoản có tên người dùng và mật khẩu yếu.
+Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_passwordguessing.svg
+- Nếu kẻ tấn công thành công trong việc tìm ra một tài khoản hợp lệ để đăng nhập, những cơ hội mới sẽ được trình bày cho kẻ tấn công. Hãy xem xét loại chức năng và dữ liệu nào hiện được trình bày cho kẻ tấn công. Sau đây là một số ví dụ về nơi kẻ tấn công đoán thành công mật khẩu của ai đó:
+# Kẻ tấn công truy cập vào tài khoản email của một nhân viên. Bên trong có hàng ngàn email từ nhiều năm trước. Trong các email có mật khẩu được truyền đạt, cho phép kẻ tấn công đăng nhập vào nhiều hệ thống hơn. Hơn nữa, có hàng trăm tệp đính kèm, một số có thể chứa thông tin rất nhạy cảm.
+# Kẻ tấn công đoán thành công mật khẩu tài khoản Quản trị viên cho hệ thống HVAC ("Hệ thống sưởi ấm, thông gió và điều hòa không khí") có trách nhiệm làm mát phòng máy chủ. Kẻ tấn công có thể thay đổi các thông số của HVAC và thông qua việc sửa đổi cẩn thận khiến phòng máy chủ quá nóng.
+# Có một dịch vụ VPN trên Internet, cho phép nhân viên truy cập vào các tài nguyên nội bộ. Một trong những nhân viên có mật khẩu yếu bị kẻ tấn công đoán ra sau nhiều ngày đoán mật khẩu liên tục. Kẻ tấn công truy cập vào dịch vụ VPN và hiện đang ở trong mạng nội bộ của tổ chức. Từ đây, kẻ tấn công cài đặt phần mềm tống tiền trong tổ chức.
+# Một ứng dụng web được triển khai trên Internet. Nó không có lỗ hổng rõ ràng nào từ bên ngoài, tuy nhiên kẻ tấn công có thể đoán mật khẩu vào tài khoản người dùng thông thường trên hệ thống. Vì công ty lưu trữ ứng dụng web tin tưởng người dùng của họ, nên bảo mật web bên trong ứng dụng kém. Từ đây, kẻ tấn công có thể sử dụng khai thác web để xâm phạm máy chủ.
++) Nhiều dịch vụ mạng có tài khoản quản trị viên tích hợp, một số thậm chí còn giữ nguyên mật khẩu mặc định kể từ khi cài đặt. Đối với mỗi dịch vụ trên mạng, kẻ tấn công có thể thử đăng nhập bằng thông tin đăng nhập mặc định. Hơn nữa, kẻ tấn công có thể thử mật khẩu thông thường và yếu. Sau đây là một số ví dụ về mật khẩu thông thường và yếu. Lưu ý tất cả đều kết thúc bằng dấu chấm than để đánh bại chính sách mật khẩu:
+Password                                     	Comment
+Summer2021!	                                Many people, including helpdesks of companies, perform password resets and set the password to the season of the year and the year we are currently in.
+W3schools123!	                        The name of the company is often used as peoples passwords. The number 123 and ! at the end is selected by users to pass password policies and make it a bit more complex.
+Rosalynn2006!	                        Rosalynn, perhaps someone's child? Users often use something of personal affection as their passwords. Names of children and perhaps the year they were born is very popular.
+Qwerty123456!	                        A seemingly random password? This password is someone pressing keyboard keys in order, then using numbers to do the same thing.
+
++) Một công cụ cho phép chúng ta dễ dàng cấu hình danh sách tên người dùng và mật khẩu để thử nghiệm với nhiều dịch vụ khác nhau là THC-Hydra (https://github.com/vanhauser-thc/thc-hydra). Công cụ này hỗ trợ nhiều giao thức để tấn công như:
+# RDP ((Giao thức máy tính từ xa)
+# FTP (Giao thức truyền tệp)
+# SMB (Khối tin nhắn máy chủ)
+# Telnet
+# SSH (Máy chủ ổ cắm an toàn)
++)Để sử dụng THC-Hydra để nhắm mục tiêu vào FTP chẳng hạn, có thể sử dụng lệnh sau:
+      hydra -L common_usernames.txt -P common_passwords.txt ftp://localhost/
+=> Lệnh này sử dụng danh sách tên người dùng và mật khẩu phổ biến để thử từng tên người dùng và mật khẩu đó với dịch vụ FTP tại máy chủ cục bộ hoặc địa chỉ IP mà bạn chọn.
+
+*  Credential Stuffing(nhồi nhét thông tin xác thực)  *
+- Một cuộc tấn công phổ biến mà kẻ tấn công sử dụng là Credential Stuffing. Điều này liên quan đến việc kẻ tấn công tải xuống cơ sở dữ liệu thông tin xác thực khổng lồ và thử nghiệm thông tin xác thực có thể áp dụng đối với dịch vụ mạng. Rò rỉ thông tin xác thực xảy ra khi dịch vụ của bên thứ ba bị tấn công, cơ sở dữ liệu bị đánh cắp và sau đó bị rò rỉ trên Internet để bất kỳ ai cũng có thể tải xuống.
+- Thật không may, nhiều người dùng sử dụng lại cùng một mật khẩu trên nhiều dịch vụ khác nhau, khiến các cuộc tấn công nhồi thông tin xác thực trở nên rất hiệu quả đối với các tổ chức.
+
+! Lưu ý ! : Bất kỳ ai, bao gồm cả bạn, đều có thể tìm kiếm trên Internet các cơ sở dữ liệu bị rò rỉ có chứa thông tin đăng nhập và mật khẩu. Không khó để hack khi mọi người không thay đổi mật khẩu?!
+
+*  Password Cracking(Bẻ khóa mật khẩu)  *
+- Trong khi Password Guessing là một cuộc tấn công trực tuyến, Password Cracking là một cuộc tấn công ngoại tuyến. Nó liên quan đến việc kẻ tấn công đánh cắp mật khẩu từ mục tiêu trước.
+- Mật khẩu thường được biểu diễn dưới dạng băm mật khẩu. Băm là cách lưu trữ mật khẩu của người dùng bằng cách gửi chúng qua hàm một chiều, khiến mật khẩu không thể đảo ngược trừ khi sử dụng phương pháp bẻ khóa mật khẩu.
+- Nếu kẻ tấn công có khả năng lấy thông tin xác thực từ hệ thống, thông tin xác thực này có thể được bảo vệ thông qua mã hóa hoặc băm. Băm là hàm một chiều được thiết kế để không bị đảo ngược thành giá trị ban đầu.
+-Bẻ khóa mật khẩu liên quan đến việc sử dụng sức mạnh tính toán, tức là CPU (Central Processing Unit)(Bộ xử lý trung tâm) và GPU (Graphical Processing Unit)(Bộ xử lý đồ họa), để thử tạo ra các mật khẩu dự đoán khớp với thông tin đăng nhập được bảo vệ lấy từ hệ thống.
+
+! Lưu ý !: GPU thường tốt hơn nhiều trong việc bẻ khóa mật khẩu vì nó có hàng trăm lõi vi mô, tất cả đều có khả năng tự thực hiện các tác vụ nhỏ. Điều này cho phép trình bẻ khóa mật khẩu trở nên nhanh hơn nhiều vì nó có thể mở rộng các hoạt động bẻ khóa trên nhiều lõi khác nhau.
+
+*  Services Without Authentication(Dịch vụ không cần xác thực)  *
+- Bằng cách khám phá và phát hiện các ứng dụng, đôi khi bạn có thể gặp phải các ứng dụng không được bảo vệ bằng xác thực. Những ứng dụng này hữu ích cho kẻ tấn công khám phá, ví dụ như lợi dụng trường tìm kiếm để săn thông tin nhạy cảm.
+- Nhiều ứng dụng trên mạng có thể được khám phá tự do, đôi khi cung cấp cho kẻ tấn công dữ liệu chính xác mà chúng đang tìm kiếm.
+- Khi thực hiện các bài tập lập bản đồ mạng và quét cổng, cần khám phá từng hệ thống và dịch vụ được phát hiện.
+
+*  Using Existing Credentials(Sử dụng thông tin xác thực hiện có)  *
+- Thông thường, kẻ tấn công đã sử dụng thông tin đăng nhập của người dùng trong môi trường. Ví dụ, nếu kẻ tấn công đã xâm phạm hệ thống máy tính của ai đó, chúng có thể sử dụng lại thông tin đăng nhập đã được hệ thống sử dụng.
++) Điều này cung cấp cho kẻ tấn công nhiều cơ hội hơn. Hãy xem xét tất cả các ứng dụng hiện có thể bị lạm dụng. Ví dụ:
+# E-mail
+# SharePoint
+# Nhân sự và Kế toán
+# VPN (Private Virtual Networking)(mạng riêng ảo)
+! Khi kẻ tấn công có quyền truy cập vào ứng dụng đằng sau hệ thống kiểm soát truy cập, lỗ hổng và dữ liệu thường rất nhiều.
+- Thông tin xác thực từ hệ thống cũng có thể được trích xuất thông qua các phương tiện khác nhau, thường liên quan đến việc có quyền truy cập của quản trị viên vào hệ thống. Mimikatz (https://github.com/gentilkiwi/mimikatz) là một công cụ như vậy, cố gắng trích xuất thông tin xác thực từ hệ thống.
+
+@ CS Penetration Testing( Kiểm tra thâm nhập an ninh mạng)
+-  ICS(Industrial Control Systems)(Hệ thống điều khiển công nghiệp)
+- SCADA(Supervisory Control And Data Acquisition)(Điều khiển giám sát và thu thập dữ liệu)
+
+*  No-knowledge, Partial-knowledge and Full-Knowledge Penetration testing(kiểm tra thâm nhập không có kiến thức, có kiến thức một phần và có kiến thức đầy đủ)
+- Tùy thuộc vào sự tham gia, tổ chức có thể quyết định cung cấp thông tin cho nhóm thực hiện kiểm tra thâm nhập. Một cuộc thâm nhập không có kiến ​​thức, đôi khi được gọi là hộp đen, ngụ ý rằng kẻ tấn công được cung cấp kiến ​​thức không trước. Một phần kiến ​​thức, đôi khi được gọi là kiểm tra hộp xám, có nghĩa là kẻ tấn công được cung cấp một số kiến ​​thức và với một cuộc kiểm tra thâm nhập có đầy đủ kiến ​​thức, đôi khi được gọi là hộp trắng, những người kiểm tra thâm nhập có mọi thứ họ cần từ mã nguồn, sơ đồ mạng, nhật ký và nhiều thứ khác.
+-Tổ chức cung cấp cho nhóm thử nghiệm thâm nhập càng nhiều thông tin thì nhóm đó có thể mang lại giá trị càng cao.
+
+*  Stolen Laptop Scenario(Tình huống máy tính xách tay bị đánh cắp)  *
+- Một kịch bản kiểm tra thâm nhập tuyệt vời là chứng minh hậu quả của việc máy tính xách tay bị đánh cắp hoặc bị mất. Hệ thống có các đặc quyền và thông tin xác thực mà kẻ tấn công có thể sử dụng để xâm nhập vào tổ chức mục tiêu.
++)Hệ thống có thể được bảo vệ bằng mật khẩu, nhưng có nhiều kỹ thuật có thể cho phép kẻ tấn công vượt qua lớp bảo vệ này. Ví dụ:
+# Ổ cứng của hệ thống có thể không được mã hóa hoàn toàn, cho phép kẻ tấn công gắn ổ cứng vào hệ thống của chính họ để trích xuất dữ liệu và thông tin đăng nhập. Những thông tin đăng nhập này có thể bị bẻ khóa và sử dụng lại trên nhiều trang đăng nhập của tổ chức.
+# Người dùng có thể đã khóa hệ thống, nhưng người dùng vẫn đăng nhập. Người dùng này có các ứng dụng và quy trình đang chạy ở chế độ nền, ngay cả khi hệ thống đã bị khóa. Kẻ tấn công có thể cố gắng thêm một card mạng độc hại vào hệ thống thông qua ví dụ như USB. Card mạng này cố gắng trở thành cách ưa thích để hệ thống truy cập internet. Nếu hệ thống sử dụng card mạng này, kẻ tấn công hiện có thể thấy lưu lượng mạng và cố gắng tìm dữ liệu nhạy cảm, thậm chí thay đổi dữ liệu.
+Ngay khi kẻ tấn công có quyền truy cập vào hệ thống, chúng có thể bắt đầu đột nhập để lấy thông tin, sau đó sử dụng thông tin đó để đạt được mục tiêu của mình.
+
+*  Social Engineering(kỹ thuật xã hội)  *
+Một hệ thống chỉ mạnh bằng thành viên yếu nhất, và đó thường là con người. Kỹ thuật xã hội liên quan đến việc nhắm mục tiêu vào người dùng bằng các cuộc tấn công cố gắng lừa họ thực hiện các hành động mà họ không cố ý. Loại kỹ thuật này rất phổ biến và nhiều vụ hack lớn nhất trên thế giới liên quan đến việc sử dụng các kỹ thuật kỹ thuật xã hội.
++) Kỹ thuật xã hội thường cố gắng lợi dụng một số khía cạnh nhất định để khiến nạn nhân tuân thủ các hành động, ví dụ:
+#Hầu hết mọi người đều có mong muốn lịch sự, đặc biệt là với người lạ
+# Những người chuyên nghiệp muốn thể hiện mình là người hiểu biết và thông minh
+# Nếu bạn được khen ngợi, bạn sẽ thường nói nhiều hơn và tiết lộ nhiều hơn
+# Hầu hết mọi người sẽ không nói dối vì mục đích nói dối
+# Hầu hết mọi người đều phản ứng tử tế với những người có vẻ quan tâm đến họ
+==> Khi ai đó trở thành nạn nhân của một cuộc tấn công kỹ thuật xã hội tinh vi, họ thường không nhận ra rằng mình đã bị tấn công.
+
+*  Social Engineering Scenario(kịch bản kĩ thuật xã hội): Being Helpful  *
+- Con người thường muốn giúp đỡ lẫn nhau. Chúng ta thích làm những điều tốt đẹp!
+- Hãy xem xét một tình huống mà Eve chạy vào quầy lễ tân của một văn phòng công ty lớn với giấy tờ của cô ấy bị thấm đẫm cà phê. Nhân viên lễ tân có thể thấy rõ Eve đang đau khổ và tự hỏi chuyện gì đang xảy ra. Eve giải thích rằng cô ấy có một cuộc phỏng vấn xin việc trong 5 phút nữa và cô ấy thực sự cần in tài liệu của mình cho cuộc phỏng vấn.
+- Eve đã chuẩn bị trước một ổ USB độc hại với các tài liệu được thiết kế để xâm nhập vào máy tính mà nó được cắm vào. Cô ấy đưa ổ USB độc hại cho nhân viên lễ tân và mỉm cười hỏi liệu nhân viên lễ tân có thể in các tài liệu cho cô ấy không. Đây có thể là những gì kẻ tấn công cần để lây nhiễm một hệ thống trên mạng nội bộ, cho phép chúng xâm nhập (chuyển hướng) nhiều hệ thống hơn.
+
+*  Social Engineering Scenario(Kịch bản kĩ thuật xã hội): Using Fear
+- Mọi người thường sợ thất bại hoặc không làm theo lệnh. Kẻ tấn công thường sử dụng nỗi sợ hãi để cố ép buộc nạn nhân làm những gì chúng cần. Ví dụ, chúng có thể giả vờ là giám đốc công ty để yêu cầu thông tin. Có lẽ một bản cập nhật trên mạng xã hội tiết lộ rằng giám đốc đang đi nghỉ và điều này có thể được sử dụng để dàn dựng cuộc tấn công.
+- Nạn nhân có thể không muốn thách thức giám đốc, và vì giám đốc đang đi nghỉ nên việc xác minh thông tin có thể khó khăn hơn.
+
+*  Social Engineering Scenario: Playing on Reciprocation(Chơi theo kiểu có đi có lại)
+- Đáp lại là làm điều gì đó đáp lại, chẳng hạn như đáp lại lòng tốt của ai đó dành cho bạn.
+- Nếu chúng ta xem xét một người giữ cửa cho bạn để bạn vào cửa trước của tòa nhà văn phòng của bạn. Vì lý do này, bạn có thể muốn giữ cửa bên cạnh để người đó đáp lại. Cửa này có thể nằm sau hệ thống kiểm soát ra vào, yêu cầu nhân viên xuất trình thẻ của họ, nhưng để đáp lại lòng tốt tương tự, cửa được giữ mở. Điều này được gọi là tailgating.
+
+* Social Engineering Scenario: Exploiting curiosity(Khai thác sự tò mò)
+- Humans are curious by nature. What would you do if you found a USB stick lying on the ground out-side the office building? Plug it in? What if the USB stick contained a document with the title "Salary Information - Current Updates"?
+- An attacker could deliberately drop many malicious USB sticks around the area where employees reside, hoping someone will plug them in.
+- Documents can contain malicious macros or exploits, or simply trick users into performing certain actions which makes them compromise themselves.
+
+*  Phishing(lừa đảo)  *
+- Lừa đảo là một kỹ thuật thường được thực hiện qua email. Kẻ tấn công sẽ cố gắng ép buộc và lừa nhân viên cung cấp thông tin nhạy cảm như thông tin đăng nhập của họ hoặc yêu cầu họ cài đặt các ứng dụng độc hại để kẻ tấn công kiểm soát hệ thống.
+Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_phishing.svg
+- Lừa đảo là một kỹ thuật phổ biến để kẻ tấn công đột nhập, một số người kiểm tra thâm nhập cũng có thể cố gắng khai thác. Điều quan trọng là không bao giờ đánh giá thấp yếu tố con người trong an ninh mạng. Miễn là có sự tham gia của con người, lừa đảo sẽ luôn là cách có thể để kẻ tấn công truy cập vào hệ thống.
+- Không nên sử dụng lừa đảo để chứng minh rằng con người mắc lỗi, nhưng hãy cố gắng chứng minh hậu quả của những lỗi đó. Nó cũng có thể được sử dụng để kiểm tra sức mạnh của bộ lọc chống thư rác và nhận thức của người dùng.
+- Có thể thực hiện một chiến dịch gồm nhiều lần lừa đảo thay vì một vòng duy nhất. Một chiến dịch gồm nhiều vòng lừa đảo có thể giúp xác định nhận thức chung của tổ chức và cũng cho họ biết rằng không chỉ những kẻ tấn công đang cố lừa người dùng của chúng tôi mà ngay cả bộ phận an ninh cũng vậy.
+
+*  Vishing  *
+- Vishing có nghĩa là sử dụng các cuộc gọi điện thoại để cố gắng khiến những nhân viên không nghi ngờ thực hiện hành động cho kẻ tấn công. Nếu nhân viên tin rằng họ đang nói chuyện điện thoại với một người mà họ biết, tốt nhất là một người có thẩm quyền, nhân viên đó có thể bị lừa thực hiện các hành động không mong muốn.
+Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_vishing.svg
+Ví dụ cuộc hội thoại:
+Eve: Hello, this is Miss Eve calling. I was told to call you personally by the CEO Margarethe; she said you would be able to help.
+Alice: Ok... What can I do for you?
+Eve: Margarethe is travelling right now, but urgently requests her password to be reset so we can get on with a business meeting happening the moment she lands.
+Eve: We urgently request for her email password to be reset so she can deliver the meeting.
+Eve: Can you proceed to reset her password to Margareth123?
+Alice: I am not sure...
+Eve: Please, Margarethe asked for you personally to comply with this request. It must be done now, I don't want to think of the consequences if not...
+Alice: Ok. Password is reset
+
+==> Vishing có thể cố gắng khiến nạn nhân tiết lộ thông tin nhạy cảm. Kẻ tấn công có thể yêu cầu sao chép tài liệu nhạy cảm hoặc bảng tính.
+
+@ CS Security Operations(Hoạt động an ninh)
+- Hoạt động bảo mật thường nằm trong SOC (Security Operations Center)(Trung tâm hoạt động bảo mật). Các thuật ngữ được sử dụng thay thế cho nhau.
+- Thông thường, trách nhiệm của SOC là phát hiện các mối đe dọa trong môi trường và ngăn chặn chúng phát triển thành các vấn đề tốn kém.
+
+*  SIEM(Security Information Event Management)(Quản lí sự kiện thông tin bảo mật)
+- Hầu hết các hệ thống đều tạo ra các bản ghi thường chứa thông tin bảo mật quan trọng.
+
+- Một sự kiện chỉ đơn giản là những quan sát mà chúng ta có thể xác định từ nhật ký và thông tin từ mạng, ví dụ:
+# Người dùng đang đăng nhập
+# Các cuộc tấn công được quan sát trong mạng
+# Giao dịch trong ứng dụng
+# Sự cố là điều gì đó tiêu cực mà chúng tôi tin rằng sẽ tác động đến tổ chức của mình. Nó có thể là mối đe dọa chắc chắn hoặc khả năng xảy ra mối đe dọa như vậy. SOC nên cố gắng hết sức để xác định sự kiện nào có thể kết luận là sự cố thực tế, sự kiện nào cần được phản hồi.
+- SIEM xử lý cảnh báo dựa trên nhật ký từ các cảm biến và màn hình khác nhau trong mạng, mỗi nhật ký có thể tạo ra các cảnh báo quan trọng để SOC phản hồi. SIEM cũng có thể cố gắng liên kết nhiều sự kiện để xác định cảnh báo.
++) SIEM thường cho phép phân tích các sự kiện từ các khu vực sau:
+# Mạng
+# Chủ nhà
+# Ứng dụng
+- Sự kiện từ mạng là điển hình nhất, nhưng ít giá trị nhất vì chúng không nắm giữ toàn bộ bối cảnh của những gì đã xảy ra. Mạng thường tiết lộ ai đang giao tiếp ở đâu, qua giao thức nào và khi nào, nhưng không tiết lộ chi tiết phức tạp về những gì đã xảy ra, với ai và tại sao.
+- Sự kiện lưu trữ cung cấp nhiều thông tin hơn về những gì thực sự đã xảy ra và với ai. Những thách thức như mã hóa không còn bị làm mờ và khả năng hiển thị được nhiều hơn về những gì đang diễn ra. Nhiều SIEM được làm giàu với các chi tiết tuyệt vời về những gì xảy ra trên chính các máy chủ, thay vì chỉ từ mạng.
+- Sự kiện từ ứng dụng là nơi SOC thường có thể hiểu rõ nhất những gì đang diễn ra. Các sự kiện này cung cấp thông tin về Triple A, AAA (Authentication, authorization and account) (Xác thực, Ủy quyền và Tài khoản), bao gồm thông tin chi tiết về cách ứng dụng hoạt động và những gì người dùng đang làm.
+- Để SIEM hiểu được các sự kiện từ các ứng dụng, thông thường nhóm SOC phải làm việc để SIEM hiểu được các sự kiện này vì hỗ trợ thường không được bao gồm "ngay khi xuất xưởng". Nhiều ứng dụng là độc quyền của một tổ chức và SIEM chưa hiểu được dữ liệu mà các ứng dụng chuyển tiếp.
+
+*  SOC Staffing(Nhân sự SOC)  *
++) Cách thức tuyển dụng nhân sự của SOC rất khác nhau tùy theo yêu cầu và cấu trúc của tổ chức. Trong phần này, chúng ta sẽ xem nhanh các vai trò điển hình liên quan đến việc vận hành SOC. Tổng quan về các vai trò tiềm năng:
+Ảnh minh họa: https://www.w3schools.com/cybersecurity/img_soc-organization.svg
+Như trong hầu hết các nhóm có tổ chức, một vai trò được chỉ định để lãnh đạo phòng ban. Trưởng phòng SOC xác định chiến lược và chiến thuật liên quan để chống lại các mối đe dọa đối với tổ chức.
+
+- Kiến trúc sư SOC chịu trách nhiệm đảm bảo các hệ thống, nền tảng và kiến ​​trúc tổng thể có khả năng cung cấp những gì các thành viên trong nhóm yêu cầu để thực hiện nhiệm vụ của họ. Kiến trúc sư SOC sẽ giúp xây dựng các quy tắc tương quan trên nhiều điểm dữ liệu và đảm bảo dữ liệu đầu vào tuân thủ các yêu cầu của nền tảng.
+- Trưởng nhóm phân tích chịu trách nhiệm xây dựng và duy trì các quy trình hoặc sổ tay hướng dẫn để đảm bảo các nhà phân tích có khả năng tìm ra thông tin cần thiết để đưa ra cảnh báo và các sự cố tiềm ẩn.
+- Các nhà phân tích cấp độ 1 đóng vai trò là người phản hồi đầu tiên đối với các cảnh báo. Nhiệm vụ của họ là, trong khả năng của mình, kết luận các cảnh báo và chuyển bất kỳ sự cố nào đến một nhà phân tích cấp cao hơn.
+- Các nhà phân tích cấp độ 2 được phân biệt bằng việc có nhiều kinh nghiệm và kiến ​​thức kỹ thuật hơn. Họ cũng phải đảm bảo bất kỳ sự cố nào trong việc giải quyết cảnh báo đều được chuyển đến Trưởng nhóm phân tích để hỗ trợ cải tiến liên tục SOC. Cấp độ 2, cùng với Trưởng nhóm phân tích, sẽ chuyển các sự cố lên Nhóm ứng phó sự cố.
+- IRT (Incident Response Team) (Đội ứng phó sự cố) là sự mở rộng tự nhiên của Đội SOC. Đội IRT được triển khai để khắc phục và giải quyết các vấn đề ảnh hưởng đến tổ chức.
+- Người kiểm tra thâm nhập lý tưởng cũng hỗ trợ phòng thủ. Người kiểm tra thâm nhập có kiến ​​thức phức tạp về cách kẻ tấn công hoạt động và có thể giúp phân tích nguyên nhân gốc rễ và hiểu cách đột nhập xảy ra. Việc hợp nhất các nhóm tấn công và phòng thủ thường được gọi là Purple Teaming và được coi là hoạt động thực hành tốt nhất.
+
+*  Escalation Chains(Chuỗi leo thang)  *
+- Một số cảnh báo yêu cầu hành động ngay lập tức. Điều quan trọng là SOC phải xác định quy trình liên hệ với ai khi xảy ra các sự cố khác nhau. Các sự cố có thể xảy ra ở nhiều đơn vị kinh doanh khác nhau, SOC phải biết liên hệ với ai, khi nào và trên phương tiện truyền thông nào.
+
++) Ví dụ về chuỗi leo thang cho các sự cố ảnh hưởng đến một bộ phận của tổ chức:
+1. Tạo Sự cố trong Hệ thống theo dõi Sự cố được chỉ định, chỉ định cho đúng phòng ban hoặc cá nhân
+2. Nếu không có hành động trực tiếp nào xảy ra từ bộ phận/cá nhân: gửi SMS và Email đến địa chỉ liên hệ chính
+3. Nếu vẫn không có hành động trực tiếp: hãy gọi điện cho người liên hệ chính
+4. Nếu vẫn không có hành động trực tiếp: hãy gọi cho người liên hệ thứ cấp
+
+*  Classification of Incidents(Phân loại sự cố)  *
+- Các sự cố nên được phân loại theo:
+1. Loại
+2. Tính quan trọng
+3. Độ nhạy
+- Tùy thuộc vào phân loại sự cố và cách giải quyết, SOC có thể thực hiện các biện pháp khác nhau để giải quyết vấn đề.
++) Loại sự cố sẽ quyết định cách phản hồi. Có nhiều loại sự cố và điều quan trọng là SOC phải hiểu ý nghĩa của từng loại sự cố đối với tổ chức. Các sự cố ví dụ được liệt kê dưới đây:
+# Bên trong Hacking
+# Phần mềm độc hại trên máy trạm của khách hàng
+# Sâu lây lan trên mạng
+# Tấn công từ chối dịch vụ phân tán
+# Thông tin bị rò rỉ
+- Mức độ nghiêm trọng của một sự cố được xác định dựa trên số lượng hệ thống bị ảnh hưởng, tác động tiềm ẩn của việc không dừng sự cố, các hệ thống liên quan và nhiều yếu tố khác. Điều quan trọng là SOC phải có khả năng xác định chính xác mức độ nghiêm trọng để có thể đóng sự cố một cách phù hợp. Mức độ nghiêm trọng là yếu tố quyết định tốc độ phản ứng với sự cố.
+- Sự cố có nên được phản ứng ngay lập tức hay nhóm có thể đợi đến ngày mai?
+- Độ nhạy quyết định ai sẽ được thông báo về sự cố. Một số sự cố đòi hỏi sự thận trọng cực độ.
+
+*  SOAR(Security Orchestration, Automation and Response)(Điều phối, tự động hóa và phản hồi bảo mật)  *
+- Để chống lại sự tiến bộ của các tác nhân đe dọa, tự động hóa là chìa khóa để SOC hiện đại phản ứng đủ nhanh. Để tạo điều kiện phản ứng nhanh với các sự cố, SOC nên có các công cụ có sẵn để tự động sắp xếp các giải pháp ứng phó với các mối đe dọa trong môi trường.
+- Chiến lược SOAR có nghĩa là đảm bảo SOC có thể sử dụng dữ liệu có thể hành động để giúp giảm thiểu và ngăn chặn các mối đe dọa đang phát triển theo thời gian thực hơn trước đây. Trong các môi trường truyền thống, kẻ tấn công mất rất ít thời gian từ thời điểm xâm phạm cho đến khi chúng lan sang các hệ thống lân cận. Ngược lại, các tổ chức thường mất rất nhiều thời gian để phát hiện các mối đe dọa đã xâm nhập vào môi trường của họ. SOAR cố gắng giúp giải quyết vấn đề này.
+- SOAR bao gồm các khái niệm như IAC (Infrastructure as Code) (Cơ sở hạ tầng dưới dạng Mã) để giúp xây dựng lại và khắc phục các mối đe dọa. SDN (Software Defined Networking) (Mạng được xác định bằng phần mềm) để kiểm soát quyền truy cập trôi chảy và dễ dàng hơn, cùng nhiều hơn nữa.
+
+*  What to Monitor?(Cần theo dõi những gì?)  *
+- Sự kiện có thể được thu thập trên nhiều thiết bị khác nhau, nhưng làm thế nào để chúng ta xác định những gì cần thu thập và giám sát? Chúng tôi muốn các bản ghi có chất lượng cao nhất. Các bản ghi có độ trung thực cao, có liên quan và nhận dạng để nhanh chóng ngăn chặn các tác nhân đe dọa trong mạng của chúng tôi. Chúng tôi cũng muốn khiến kẻ tấn công khó có thể lách các cảnh báo mà chúng tôi cấu hình.
++) Nếu chúng ta xem xét các cách khác nhau để bắt kẻ tấn công, chúng ta sẽ thấy rõ mình nên tập trung vào đâu. Sau đây là danh sách các chỉ số có thể sử dụng để phát hiện kẻ tấn công và mức độ khó khăn mà kẻ tấn công có thể thay đổi.
+Indicator	                                                          Difficulty to change
+File checksums and hashes	                                  Very Easy
+IP Addresses	                                                             Easy
+Domain Names	                                                    Simple
+Network and Host Artifacts	                                   Annoying
+Tools	                                                                  Challenging
+Tactics, Techniques and Procedures	                      Hard
+
+Giải thích:
+# Tổng kiểm tra và băm tệp có thể được sử dụng để xác định các phần mềm độc hại hoặc công cụ đã biết do kẻ tấn công sử dụng. Việc thay đổi các chữ ký này được coi là đơn giản đối với kẻ tấn công vì mã của chúng có thể được mã hóa và thay đổi theo nhiều cách khác nhau, khiến tổng kiểm tra và băm thay đổi.
+# Địa chỉ IP cũng dễ thay đổi. Kẻ tấn công có thể sử dụng địa chỉ IP từ các máy chủ bị xâm phạm khác hoặc chỉ cần sử dụng địa chỉ IP trong rừng rậm của các nhà cung cấp đám mây và VPS (Virtual Private Server) (Máy chủ riêng ảo) khác nhau.
+# Tên miền cũng có thể được cấu hình lại khá dễ dàng bởi kẻ tấn công. Kẻ tấn công có thể cấu hình một hệ thống bị xâm phạm để sử dụng DGA (Domain Generation Algorithm) (Thuật toán tạo tên miền) để liên tục sử dụng tên DNS mới theo thời gian. Một tuần hệ thống bị xâm phạm sử dụng một tên, nhưng tuần tiếp theo tên đã tự động thay đổi.
+# Network và Host Artifacts khó thay đổi hơn vì điều này liên quan đến nhiều thay đổi hơn đối với kẻ tấn công. Các tiện ích của chúng sẽ có chữ ký, như tác nhân người dùng hoặc không có, có thể được SOC phát hiện.
+# Các công cụ ngày càng khó thay đổi hơn đối với kẻ tấn công. Không phải hàm băm của các công cụ, mà là cách các công cụ hoạt động và vận hành khi tấn công. Các công cụ sẽ để lại dấu vết trong nhật ký, tải thư viện và những thứ khác mà chúng ta có thể theo dõi để phát hiện những bất thường này.
+# Nếu những người bảo vệ có khả năng xác định Chiến thuật, Kỹ thuật và Quy trình mà những kẻ tấn công sử dụng, thì những kẻ tấn công sẽ càng khó đạt được mục tiêu của chúng hơn. Ví dụ, nếu chúng ta biết rằng kẻ tấn công thích sử dụng Spear-Phishing(lừa đảo bằng giáo mác) và sau đó Pivoting(xoay trục) ngang hàng thông qua các hệ thống nạn nhân khác, những người bảo vệ có thể sử dụng điều này để có lợi cho họ. Những người bảo vệ có thể tập trung đào tạo cho nhân viên có nguy cơ bị spear-phishing và bắt đầu triển khai các rào cản để từ chối kết nối mạng ngang hàng.
+
+@  CS Incident Response(Phản hồi sự cố)
+- Một Sự cố có thể được phân loại là một điều gì đó bất lợi, một mối đe dọa, đối với hệ thống máy tính hoặc mạng của chúng tôi. Nó ngụ ý gây hại hoặc ai đó cố gắng gây hại cho tổ chức. Không phải tất cả các Sự cố đều được xử lý bởi IRT(Incident Response Team) (Nhóm ứng phó sự cố) vì chúng không nhất thiết phải có tác động, nhưng những người có IRT được triệu tập để giúp xử lý sự cố theo cách có thể dự đoán được và chất lượng cao.
+- IRT phải phù hợp chặt chẽ với các mục tiêu và mục đích kinh doanh của tổ chức và luôn cố gắng đảm bảo kết quả tốt nhất của các sự cố. Thông thường, điều này liên quan đến việc giảm tổn thất về tiền bạc, ngăn chặn kẻ tấn công thực hiện chuyển động ngang và ngăn chặn chúng trước khi chúng có thể đạt được mục tiêu của mình.
+
+*  IRT - Incident Response Team(Đội ứng phó sự cố)
+- IRT là một nhóm chuyên trách để giải quyết các Sự cố An ninh mạng. Nhóm có thể chỉ bao gồm các chuyên gia An ninh mạng, nhưng có thể tạo ra sự phối hợp mạnh mẽ nếu có thêm nguồn lực từ các nhóm khác. Hãy xem xét cách các đơn vị sau có thể tác động lớn đến hiệu suất của nhóm bạn trong một số tình huống nhất định:
+# Chuyên gia an ninh mạng - Chúng ta đều biết những người này là thành viên trong nhóm.
+# Hoạt động an ninh - Họ có thể có hiểu biết sâu sắc về các vấn đề đang phát triển và có thể hỗ trợ bằng góc nhìn toàn cảnh về tình hình.
+# Hoạt động CNTT
+# Hoạt động mạng
+# Phát triển
+# Hợp pháp
+# Nhân sự
+
+*  PICERL(Preparation, Identification, Containment, Eradication, Recovery, Lessons Learned) - A Methodology(Một phương pháp luận)
+- Phương pháp PICERL có tên gọi chính thức là NIST-SP 800-61 (https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf) và bao gồm phần tổng quan về phương pháp có thể áp dụng để ứng phó sự cố.
+- Đừng coi phương pháp này là mô hình thác nước, mà thay vào đó là một quá trình mà bạn có thể tiến lên và lùi lại. Điều này rất quan trọng để đảm bảo bạn xử lý đầy đủ các sự cố xảy ra.
++) 6 giai đoạn ứng phó sự cố:
+        - Preparation: Giai đoạn này là để chuẩn bị ứng phó với sự cố. Có nhiều điều mà IRT cần cân nhắc để đảm bảo họ đã chuẩn bị sẵn sàng. Chuẩn bị nên bao gồm việc phát triển các sổ tay hướng dẫn và quy trình chỉ định cách tổ chức nên phản ứng với một số loại sự cố nhất định. Quy tắc giao chiến cũng nên được xác định trước: nhóm nên phản ứng như thế nào? Nhóm có nên chủ động cố gắng ngăn chặn và xóa bỏ các mối đe dọa hay đôi khi có thể chấp nhận được việc theo dõi một mối đe dọa trong môi trường để tìm hiểu thông tin tình báo có giá trị về cách chúng đột nhập, chúng là ai và chúng đang theo đuổi điều gì?Nhóm cũng nên đảm bảo rằng họ có các bản ghi, thông tin và quyền truy cập cần thiết để thực hiện phản hồi. Nếu nhóm không thể truy cập vào các hệ thống mà họ đang phản hồi hoặc nếu các hệ thống không thể mô tả chính xác sự cố, nhóm sẽ thất bại. Các công cụ và tài liệu phải được cập nhật và các kênh truyền thông an toàn đã được đàm phán. Nhóm phải đảm bảo các đơn vị kinh doanh và quản lý cần thiết có thể nhận được thông tin cập nhật liên tục về diễn biến của các sự cố ảnh hưởng đến họ.  Đào tạo cho cả nhóm và các bộ phận hỗ trợ của tổ chức cũng rất cần thiết cho sự thành công của nhóm. Người ứng phó sự cố có thể tìm kiếm đào tạo và chứng chỉ và nhóm có thể cố gắng tác động đến phần còn lại của tổ chức để không trở thành nạn nhân của các mối đe dọa.
+
+*  Identification  *
+- Xem xét dữ liệu và sự kiện, cố gắng chỉ ra điều gì đó cần được phân loại là sự cố. Nhiệm vụ này thường được giao cho SOC, nhưng IRT có thể tham gia vào hoạt động này và với kiến ​​thức của mình, cố gắng cải thiện việc nhận dạng.
+- Sự cố thường được tạo ra dựa trên cảnh báo từ các công cụ liên quan đến bảo mật như EDR (Endpoint Detection and Response) (Phát hiện và phản hồi điểm cuối), IDS/IPS (Intrusion Detection/Intrusion Prevention Systems) (Hệ thống phát hiện/phòng ngừa xâm nhập) hoặc SIEM's (Security Information Event Management System) (Hệ thống quản lý sự kiện thông tin bảo mật). Sự cố cũng có thể xảy ra khi ai đó báo cho nhóm về sự cố, ví dụ như người dùng gọi điện cho nhóm, gửi email đến hộp thư đến của IRT hoặc phiếu trong hệ thống quản lý trường hợp sự cố.
+- Mục tiêu của giai đoạn xác định là phát hiện ra các sự cố và kết luận tác động và phạm vi của chúng. Các câu hỏi quan trọng mà nhóm nên tự hỏi bao gồm:
+# Mức độ quan trọng và nhạy cảm của nền tảng bị xâm phạm là gì?
+# Nền tảng này có được sử dụng ở nơi khác không, nghĩa là có khả năng xảy ra tình trạng xâm phạm tiếp theo nếu không có biện pháp khắc phục kịp thời?
+# Có bao nhiêu người dùng và hệ thống liên quan?
+# Những kẻ tấn công có những loại thông tin xác thực nào và chúng có thể được sử dụng lại ở đâu?
+Nếu cần phải ứng phó với sự cố, nhóm sẽ chuyển sang giai đoạn ngăn chặn tiếp theo.
+
+*  Containment(Sự ngăn chặn)  *
+- Việc ngăn chặn nên cố gắng ngăn chặn những kẻ tấn công trên đường đi của chúng và ngăn chặn thiệt hại thêm. Bước này sẽ đảm bảo tổ chức không phải chịu thêm bất kỳ thiệt hại nào nữa và đảm bảo những kẻ tấn công không thể đạt được mục tiêu của chúng.
++) IRT nên cân nhắc sớm nhất có thể xem có nên sao lưu và chụp ảnh hay không. Sao lưu và chụp ảnh rất hữu ích để lưu giữ bằng chứng cho sau này. Quy trình này nên cố gắng bảo mật:
+# Một bản sao của ổ cứng liên quan đến giám định tập tin
+# Một bản sao bộ nhớ của các hệ thống liên quan để phục vụ cho mục đích pháp y bộ nhớ
++) IRT có thể thực hiện nhiều hành động để ngăn chặn kẻ tấn công, tùy thuộc rất nhiều vào sự cố cụ thể:
+# Chặn kẻ tấn công trong Tường lửa
+# Ngắt kết nối mạng tới các hệ thống bị xâm phạm
+# Hệ thống quay ngoại tuyến
+# Thay đổi mật khẩu
+# Yêu cầu ISP (Internet Service Provider) (Nhà cung cấp dịch vụ Internet) hoặc các đối tác khác giúp đỡ để ngăn chặn những kẻ tấn công
+==> Các hành động được thực hiện trong giai đoạn ngăn chặn sẽ cố gắng nhanh chóng tiêu diệt kẻ tấn công để IRT có thể chuyển sang giai đoạn diệt trừ.
+
+*  Eradication(Diệt trừ)  *
+- Nếu việc ngăn chặn được thực hiện đúng cách, IRT có thể chuyển sang giai đoạn xóa bỏ, đôi khi được gọi là giai đoạn khắc phục. Trong giai đoạn này, mục tiêu là loại bỏ các hiện vật của kẻ tấn công.
++) Có những giải pháp nhanh chóng để đảm bảo diệt trừ, ví dụ:
+# Khôi phục từ bản sao lưu tốt đã biết
+# Xây dựng lại dịch vụ
+==> Nếu các thay đổi và cấu hình đã được triển khai như một phần của quá trình ngăn chặn, hãy nhớ rằng việc khôi phục hoặc xây dựng lại có thể hoàn tác các thay đổi này và chúng sẽ phải được áp dụng lại. Tuy nhiên, đôi khi, IRT phải cố gắng xóa thủ công các hiện vật do kẻ tấn công để lại.
+
+*  Recovery(Sự khôi phục)  *
+- Khôi phục hoạt động bình thường là trạng thái mục tiêu của IRT. Điều này có thể liên quan đến việc kiểm tra chấp nhận từ các đơn vị kinh doanh. Lý tưởng nhất là chúng tôi thêm các giải pháp giám sát với thông tin về sự cố. Chúng tôi muốn khám phá xem liệu những kẻ tấn công có đột nhiên quay trở lại hay không, ví dụ như do các hiện vật mà chúng tôi không xóa trong quá trình xóa.
+
+*  Lesson learned(Bài học kinh nghiệm)  *
++) Giai đoạn cuối cùng liên quan đến việc chúng ta rút ra bài học từ sự cố. Chắc chắn sẽ có nhiều bài học từ sự cố, ví dụ:
+# Liệu IRT có đủ kiến ​​thức, công cụ và khả năng tiếp cận cần thiết để thực hiện công việc với hiệu quả cao không?
+# Có bản ghi nào bị thiếu giúp cho nỗ lực IRT trở nên dễ dàng và nhanh hơn không?
+# Có quy trình nào có thể được cải thiện để ngăn ngừa những sự cố tương tự xảy ra trong tương lai không?
+==> Giai đoạn rút ra bài học kinh nghiệm thường kết thúc bằng một báo cáo tóm tắt và tổng quan về mọi diễn biến đã diễn ra trong suốt sự cố.
+
+@ CS Quiz
+1. Which 3 levels in OSI Model are usually implemented in the software within the operating system?
+--> Application, Presentation, Session  
+2.Which of these protocols reside in Layer 3 - Network in the OSI Model?
+--> IP and IPSec 
+3. A netmask can be represented by which two ways?
+--> Decimal Numbers (Netmask: 255.255.255.0) and Slash Notation (80.212.212.50/32)
+4. Which is the broadcast address in this network: 172.16.24.0/24
+--> 172.16.24.255 
+5.  Which one of these is a RFC 1918 ip address?
+--> 172.16.1.30  
+6. Shortening an IPv6 address means:
+--> Removing a group of only 0's  
+7. What is spoofing(sự giả mạo) ?
+--> Falsifying data, making something appear different than they really are  
+8. What is Zero-Trust architecture?
+--> A network where all systems/resources need explicit access to be able to communicate  
+9. You need an IDS (Intrusion Detection System) in addition to IPS (Intrusion Prevention System) to be able to both detect and prevent access
+--> False. IPS is also able to detect if positioned correctly in the network  
+10. To be able to detect and block specific file types/documents to be blocked from downloading from the internet, with a firewall, you need:
+--> A Next-Generation Firewall with layer 7 features  
+11. A cookie can not be used to control a users session/state
+--> False. Cookies are often used for tracking sessions  
+12. Which types of packets can be used to determine if a system is alive on the network?
+--> ICMP Echo Request, ICMP Timestamp Request, TCP SYN, TCP ACK  
+13. ARP Scanning can only be used to identify hosts/systems on the LAN
+--> True
+14. NMAP Timing options (-T) can be used to to avoid detection by
+--> Limit speed on how fast hosts are scanned  
+15. What is a strobe(nhấp nháy) of data?
+--> A sudden increase of traffic in the network  
+16. What is IDOR?
+--> Insecure Direct Object Reference  
+17. What is SQL injection?
+--> It is used to inject malicious code to a database server, through a query(truy vấn)  
+18. What is best practice in defending against SQL injection?
+--> Sanitizing users input in a web application  
+19. What is CSP - Content Security Policy?
+--> A strict way of controlling where javascript is allowed to be executed from 
+20. Which order of security protocols is correct, going from least to most secure?
+--> WEP, WPA, WPA2, WPA3  
+21. Using the same strong password, with high entropy(hỗn loạn), on multiple sites is good practice
+--> False. If one site is breached/hacked and stores passwords in clear text, your password is now in hackers hands  
+22. SIEM is commonly used to
+--> Do a real-time analysis of security alerts generated by applications, hosts and network hardware  
+23. Classifications of incidents should generally be according to
+--> Category, sensitivity, criticality  
+24. The 6 stages of PICERL are:
+--> Preparation, Identification, Containment, Eradication, Recovery, Lessons Learned 
+25. In which phase of PICERL is blocking attackers usually done?
+--> Containment  
+________________________________________________________________________________________________Hết__________________________________________________________________________________________________________________
