@@ -1,0 +1,320 @@
+🔐 LECTURE 0: Securing Accounts(Bảo mật tài khoản)
+📌 Dictionary Attacks
+
+Dò bằng danh sách từ phổ biến.
+
+📌 Brute-Force Attacks
+
+Thử mọi khả năng (ví dụ: 0000–9999, "aaaa", "abcd1234").
+
+Verifier nên cho phép mật khẩu dài tối thiểu 64 ký tự, có ký tự đặc biệt, Unicode.
+
+Cần có giới hạn số lần đăng nhập sai.
+
+📌 Memorized Secrets
+
+Câu hỏi bảo mật: "tên xe", "tên cha",...
+
+📌 2FA (Two-Factor Authentication)
+
+Knowledge: mật khẩu
+
+Possession: điện thoại, token
+
+Inherence: vân tay, khuôn mặt
+
+📌 OTP (One-Time Password)
+
+Mã xác thực dùng 1 lần, tồn tại vài phút.
+
+📌 SIM Swapping
+
+Chiếm số điện thoại để đánh cắp mã OTP.
+
+📌 Keylogging
+
+Ghi lại tổ hợp phím người dùng.
+
+📌 Credential Stuffing
+
+Dùng tài khoản bị lộ từ các nền tảng khác.
+
+📌 Social Engineering
+
+Lừa người dùng tiết lộ thông tin.
+
+📌 Phishing
+
+Giả mạo trang/đường dẫn để lấy thông tin.
+
+📌 MITM (Man-In-The-Middle)
+
+Chặn và đọc trộm dữ liệu giữa 2 bên.
+
+📌 SSO (Single Sign-On)
+
+Đăng nhập 1 lần → truy cập nhiều dịch vụ.
+
+📌 Password Managers
+
+Lưu trữ mật khẩu an toàn: iCloud Keychain, Google Password Manager.
+
+📌 Passkeys
+
+Xác thực không cần mật khẩu (dựa trên thiết bị và biometrics).
+
+💾 LECTURE 1: Securing Data(Bảo mật dữ liệu)
+📌 Password
+
+Cần mạnh và duy nhất.
+
+📌 Hashing
+
+Chuyển dữ liệu → chuỗi cố định, không đảo ngược.
+
+📌 Rainbow Tables
+
+Bảng tra cứu sẵn để bẻ khoá hash.
+
+📌 Salting
+
+Thêm dữ liệu ngẫu nhiên trước khi hash → tránh bị rainbow table tấn công.
+
+📌 One-Way Hash Function
+
+Dữ liệu đầu vào bất kỳ → đầu ra cố định, không thể đảo ngược.
+
+📌 Cryptography
+
+Khoa học mã hóa thông tin.
+
+📌 Encode/Decode
+
+Encode: plaintext → codetext
+
+Decode: codetext → plaintext
+
+📌 Cipher/Encipher
+
+Cipher: thuật toán mã hóa
+
+Encipher: plaintext → ciphertext
+
+📌 Keys
+
+Chìa khoá dùng để mã hoá/giải mã
+
+📌 Secret-Key / Symmetric-Key Encryption
+
+Cùng 1 khoá dùng cho mã hoá và giải mã.
+
+📌 Public-Key Cryptography (RSA)
+
+Cặp khoá: công khai và riêng tư
+
+RSA:
+
+n = p × q
+
+c = m^e mod n
+
+m = c^d mod n
+
+📌 Key Exchange – Diffie-Hellman
+
+Trao đổi khoá bí mật qua kênh không an toàn.
+
+📌 Digital Signatures / Verify
+
+Đảm bảo tính toàn vẹn, xác thực của dữ liệu.
+
+📌 Encryption in Transit / at Rest / End-to-End
+
+In Transit: bảo vệ khi truyền tải
+
+At Rest: bảo vệ khi lưu trữ
+
+End-to-End: chỉ người gửi và nhận đọc được
+
+📌 Secured Deletion
+
+Xoá dữ liệu không thể khôi phục.
+
+📌 Ransomware
+
+Mã độc mã hóa dữ liệu và đòi tiền chuộc.
+
+📌 Quantum Computing
+
+Có thể phá các thuật toán mã hóa hiện nay.
+
+🛡️ LECTURE 2: Securing Systems(Hệ thống bảo mật)
+📌 Wi-Fi Protected Access
+
+Bảo vệ mạng không dây (WPA2, WPA3)
+
+📌 HTTP / HTTPS / TLS
+
+HTTPS = HTTP + TLS
+
+TLS: mã hóa kết nối
+
+📌 Packet Sniffing
+
+Rình bắt gói tin qua mạng.
+
+📌 Cookies
+
+Lưu trạng thái người dùng.
+
+📌 Session Hijacking
+
+Chiếm đoạt session để truy cập trái phép.
+
+📌 Certificate Authority (CA)
+
+Cấp chứng chỉ số (HTTPS).
+
+📌 SSL Stripping
+
+Chuyển HTTPS về HTTP để tấn công.
+
+📌 HSTS
+
+Ép trình duyệt dùng HTTPS.
+
+📌 VPN
+
+Mã hoá dữ liệu, ẩn địa chỉ IP thật khi truy cập mạng.
+
+📌 Port / Port Scanning
+
+Cổng dịch vụ trên hệ thống.
+
+Quét port để tìm điểm yếu.
+
+📌 Penetration Testing / Ethical Hacking
+
+Kiểm thử thâm nhập có đạo đức.
+
+📌 Firewall
+
+Chặn truy cập trái phép.
+
+📌 DPI (Deep Packet Inspection)
+
+Phân tích sâu nội dung gói tin.
+
+📌 Proxy
+
+Trung gian giữa client và server.
+
+📌 Malware / Virus / Worm / Botnet
+
+Phần mềm độc hại / lây nhiễm / điều khiển từ xa
+
+📌 DDoS Attack
+
+Tấn công từ nhiều máy → làm nghẽn hệ thống.
+
+📌 Automatic Updates
+
+Vá lỗi và lỗ hổng bảo mật.
+
+📌 Zero-Day Attacks
+
+Tấn công vào lỗ hổng chưa ai biết hoặc chưa vá.
+
+💻 LECTURE 3: Securing Software (Bảo mật phần mềm)
+📌 Code Injection (XSS) (Cross-site Scripting)
+
+Tiêm mã độc (HTML/JS) vào web.
+
+📌 Reflected / Stored XSS
+
+Reflected: phản hồi ngay
+
+Stored: lưu trên server
+
+📌 Character Escapes
+
+Mã hóa ký tự đặc biệt để tránh XSS
+(e.g. < → &lt;)
+
+📌 SQL Injection
+
+Chèn câu lệnh SQL độc hại.
+Ví dụ:
+
+sql
+Sao chép
+Chỉnh sửa
+SELECT * FROM users WHERE username = 'malan' AND password = '' OR '1' = '1'
+📌 Prepared Statements
+
+Ngăn SQL Injection.
+
+📌 Command Injection
+
+Chèn lệnh hệ thống (eval, system).
+
+📌 Client/Server-Side Validation
+
+Client: dễ bị chỉnh sửa.
+
+Server: phải luôn kiểm tra.
+
+📌 CSRF
+
+Lợi dụng cookie để thực hiện lệnh trái phép.
+
+📌 ACE / RCE
+
+Thực thi mã tuỳ ý / từ xa.
+
+📌 Buffer/Stack Overflow
+
+Ghi tràn bộ nhớ → thực thi mã độc.
+
+📌 Cracking / Reverse Engineering / Malware Analysis
+
+📌 OSS / Closed-Source / App Store / Package Manager / OS
+
+📌 Bug Bounty / CVE / CVSS / EPSS / KEV
+
+🕵️‍♂️ LECTURE 4: Preserving Privacy(Bảo vệ sự riêng tư)
+📌 Browsing History / Logs / HTTP Headers
+
+Dễ bị lộ thông tin nếu không cẩn thận.
+
+📌 Fingerprinting / User-Agent
+
+Theo dấu trình duyệt, thiết bị.
+
+📌 Cookies (Session, Tracking, 3rd-party)
+
+Dùng để theo dõi người dùng.
+
+📌 Tracking Parameters
+
+Theo dõi từ URL(Uniform Resource Locator)(Hệ thống định vị tài nguyên thống nhất).
+
+📌 Private Browsing
+
+Không lưu lịch sử (nhưng vẫn bị theo dõi bởi ISP).
+
+📌 Supercookies
+
+Khó xóa hơn cookie thông thường.
+
+📌 DNS / DoH / DoT
+
+DoH/DoT để mã hóa truy vấn DNS.
+
+📌 VPN / TOR
+
+Dùng để ẩn địa chỉ IP thật và dữ liệu truy cập.
+
+📌 Permissions / Location-Based Services
+
+Kiểm tra quyền ứng dụng truy cập camera, mic, vị trí.
